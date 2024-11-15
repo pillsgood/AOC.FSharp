@@ -5,12 +5,17 @@ open AOC.FSharp.Common
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 
-type Card = { id: int; count: int }
-
-type Day04() =
+type Day05() =
     inherit AocFixture()
+    let input = base.Input.Get<string[]>()
+
+    let seeds =
+        input[0]
+        |> function
+            | Matches Regex(@"\d+")
 
     let cards =
+
         let pattern = Regex(@"Card\s*(\d+): ((?:\s*\d+)+) \| ((?:\s*\d+)+)")
         let map f (x, y) = (f x), (f y)
 
@@ -25,19 +30,7 @@ type Day04() =
         base.Input.Get<string[]>() |> Seq.choose parse |> Seq.toList
 
     [<Test>]
-    member _.Part1() =
-        let getPoint = fun count -> if count > 0 then 1 <<< count - 1 else 0
-        cards |> Seq.sumBy (_.count >> getPoint) |> base.Answer.Submit
+    member _.Part1() = ignore
 
     [<Test>]
-    member _.Part2() =
-        let count card = min card.count (cards.Length - card.id)
-
-        let update registry (src, dst) =
-            registry |> Array.updateAt dst (registry[dst] + registry[src])
-
-        cards
-        |> Seq.collect (fun card -> Seq.init (count card) (fun i -> card.id - 1, card.id + i))
-        |> Seq.fold update (Array.init cards.Length (fun _ -> 1))
-        |> Seq.sum
-        |> base.Answer.Submit
+    member _.Part2() = ignore

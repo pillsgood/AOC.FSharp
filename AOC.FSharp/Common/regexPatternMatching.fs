@@ -4,7 +4,7 @@ module AOC.FSharp.Common.regexPatternMatching
 open System.Diagnostics.CodeAnalysis
 open System.Text.RegularExpressions
 
-let (|RegexMatch|_|) (pattern: Regex) input =
+let (|Match|_|) (pattern: Regex) input =
     let m = pattern.Match(input)
 
     if m.Success then
@@ -12,7 +12,7 @@ let (|RegexMatch|_|) (pattern: Regex) input =
     else
         None
 
-let (|RegexMatches|_|) ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern: string) input : Match list option =
+let (|Matches|_|) ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern: string) input : Match list option =
     let matches = Regex.Matches(input, pattern)
 
     if matches.Count > 0 then

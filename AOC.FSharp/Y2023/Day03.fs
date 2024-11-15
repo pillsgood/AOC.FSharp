@@ -19,7 +19,7 @@ type Day03() =
         parts <-
             [ for y in 0 .. input.Length - 1 ->
                   match input[y] with
-                  | RegexMatches @"\d+" parts ->
+                  | Matches @"\d+" parts ->
                       parts
                       |> List.map (fun part -> (rectInt (int2 (part.Index, y), vector2 (part.Length - 1, 0)), int part.Value))
                   | _ -> [] ]
