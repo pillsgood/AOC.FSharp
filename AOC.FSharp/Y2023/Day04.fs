@@ -26,8 +26,8 @@ type Day04() =
 
     [<Test>]
     member _.Part1() =
-        let eval = fun count -> if count > 0 then 1 <<< count - 1 else 0
-        cards |> Seq.sumBy (_.count >> eval) |> base.Answer.Submit
+        let getPoint = fun count -> if count > 0 then 1 <<< count - 1 else 0
+        cards |> Seq.sumBy (_.count >> getPoint) |> base.Answer.Submit
 
     [<Test>]
     member _.Part2() =
