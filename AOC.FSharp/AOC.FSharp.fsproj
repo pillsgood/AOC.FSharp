@@ -17,6 +17,8 @@
     <Compile Include="Common\line.fs"/>
     <Compile Include="Common\rect.fs"/>
     <Compile Include="Common\regexPatternMatching.fs" />
+    <Compile Include="Common\string.fs" />
+    <Compile Include="Common\Seq.fs" />
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>

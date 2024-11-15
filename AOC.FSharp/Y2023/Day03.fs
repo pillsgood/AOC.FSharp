@@ -44,7 +44,7 @@ type Day03() =
     [<Test>]
     member _.Part2() =
         let getGearRatio point =
-            let area = rect (point - int2.one, int2 (2  , 2))
+            let area = rect (point - int2.one, int2 (2, 2))
 
             match parts |> List.where (fst >> intersects area) |> List.map snd with
             | [ fst; snd ] -> Some(fst * snd)

@@ -4,8 +4,8 @@ module AOC.FSharp.Common.regexPatternMatching
 open System.Diagnostics.CodeAnalysis
 open System.Text.RegularExpressions
 
-let (|RegexMatch|_|) ([<StringSyntax("Regex")>] pattern: string) input =
-    let m = Regex.Match(input, pattern)
+let (|RegexMatch|_|) (pattern: Regex) input =
+    let m = pattern.Match(input)
 
     if m.Success then
         Some(List.tail [ for g in m.Groups -> g.Value ])
