@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="UserContentModel">
+    <attachedFolders />
+    <explicitIncludes>
+      <Path>AOC.FSharp/Y2023/Day01.fs</Path>
+    </explicitIncludes>
+    <explicitExcludes>
+    </explicitExcludes>
+  </component>
+</project>
