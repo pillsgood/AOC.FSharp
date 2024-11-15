@@ -12,16 +12,14 @@ type Day04() =
 
     let cards =
         let pattern = Regex(@"Card\s*(\d+): ((?:\s*\d+)+) \| ((?:\s*\d+)+)")
+        let map f (x, y) = (f x), (f y)
 
         let parse =
             function
             | RegexMatch pattern [ id; pot; jackpot ] ->
-                { id = int id
-                  count =
-                    (pot |> String.split " ")
-                    |> Seq.intersect (jackpot |> String.split " ")
-                    |> Seq.length }
-                |> Some
+                Some
+                    { id = int id
+                      count = (pot, jackpot) |> map (String.split " ") ||> Seq.intersect |> Seq.length }
             | _ -> None
 
         base.Input.Get<string[]>() |> Seq.choose parse |> Seq.toList
