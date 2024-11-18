@@ -1,6 +1,7 @@
 ﻿namespace AOC.FSharp.Y2023
 
 open System
+open System.Text.RegularExpressions
 open AOC.FSharp.Common
 open NUnit.Framework
 open Pillsgood.AdventOfCode
@@ -15,11 +16,10 @@ type Day03() =
     [<OneTimeSetUp>]
     member _.Setup() =
         let input = base.Input.Get<string[]>()
-
         parts <-
             [ for y in 0 .. input.Length - 1 ->
                   match input[y] with
-                  | Matches @"\d+" parts ->
+                  | Matches (Regex(@"\d+")) parts ->
                       parts
                       |> List.map (fun part -> (rectInt (int2 (part.Index, y), vector2 (part.Length - 1, 0)), int part.Value))
                   | _ -> [] ]

@@ -12,8 +12,8 @@ let (|Match|_|) (pattern: Regex) input =
     else
         None
 
-let (|Matches|_|) ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern: string) input : Match list option =
-    let matches = Regex.Matches(input, pattern)
+let (|Matches|_|) (pattern: Regex) (input: string) : Match list option =
+    let matches = pattern.Matches(input)
 
     if matches.Count > 0 then
         Some([ for m in matches -> m ])
