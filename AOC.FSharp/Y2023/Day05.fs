@@ -37,9 +37,7 @@ type Day05() =
                             let src = int64 m.Groups["srcRange"].Captures[i].Value
                             let dst = int64 m.Groups["dstRange"].Captures[i].Value
                             let len = int64 m.Groups["length"].Captures[i].Value
-
-                            { Range = { Start = src; End = src + len - 1L }
-                              Offset = dst - src } ] } ]
+                            { Range = { Start = src; End = src + len - 1L }; Offset = dst - src } ] } ]
         | _ -> []
 
     [<Test>]
@@ -72,47 +70,31 @@ type Day05() =
 
     [<Test>]
     member _.Part2() =
-        let intersects src dst =
-            src.End > dst.Start && src.Start < dst.End
+        let intersects src dst = src.End > dst.Start && src.Start < dst.End
 
         let split (instruction: MapInstruction) (src: Range) : (Range * Range option) option =
             let dst = instruction.Range
 
-            let (|Before|_|) src =
-                src.Start < dst.Start && src.End >= dst.Start
-
-            let (|Overlap|_|) src =
-                src.End > dst.Start && src.Start < dst.End
-
-            let (|After|_|) src =
-                src.End > dst.End && src.Start >= dst.End
+            let (|Before|_|) src = src.Start < dst.Start && src.End >= dst.Start
+            let (|Overlap|_|) src = src.End > dst.Start && src.Start < dst.End
+            let (|After|_|) src = src.End > dst.End && src.Start >= dst.End
 
             match src with
             | Before ->
-                let segment =
-                    { Start = src.Start
-                      End = dst.Start - 1L }
-
-                let remainder = { Start = dst.Start; End = src.End }
-
+                let segment = { src with End = dst.Start - 1L }
+                let remainder = { dst with End = src.End }
                 Some(segment, Some remainder)
             | Overlap ->
                 let offset range =
-                    { range with
-                        Start = range.Start + instruction.Offset
-                        End = range.End + instruction.Offset }
+                    { Start = range.Start + instruction.Offset; End = range.End + instruction.Offset }
 
-                let segment =
-                    { Start = (max src.Start dst.Start)
-                      End = (min src.End dst.End) }
+                let segment = { Start = (max src.Start dst.Start); End = (min src.End dst.End) }
 
                 let remainder =
-                    if segment.End >= src.End then
-                        None
+                    if segment.End < src.End then
+                        Some { Start = segment.End + 1L; End = src.End }
                     else
-                        Some
-                            { Start = segment.End + 1L
-                              End = src.End }
+                        None
 
                 Some(offset segment, remainder)
             | After ->
@@ -129,15 +111,12 @@ type Day05() =
             let unfold (maps: MapInstruction list) (range: Range option) : (Range * Range option) option =
                 match range with
                 | Some range ->
-                    let opt = maps |> Seq.tryFind (_.Range >> intersects range)
-
-                    match opt with
+                    match (maps |> Seq.tryFind (_.Range >> intersects range)) with
                     | Some map -> split map range
                     | None -> Some(range, None)
                 | None -> None
 
-            let result = Some range |> Seq.unfold (unfold instructions) |> Seq.toList
-            result
+            Some range |> Seq.unfold (unfold instructions) |> Seq.toList
 
         let rec traverse (map: MapDefinition option) (range: Range) : Range seq =
             match map with
@@ -153,13 +132,13 @@ type Day05() =
                 |> Seq.map (_.Value >> int64)
                 |> Seq.chunkBySize 2
                 |> Seq.choose (function
-                    | [| start; len |] ->
-                        Some
-                            { Start = start
-                              End = start + len - 1L }
+                    | [| start; len |] -> Some { Start = start; End = start + len - 1L }
                     | _ -> None)
             | _ -> []
 
         let start = maps |> Seq.tryFind (fun m -> m.SrcName = "seed")
-        let result = ranges |> Seq.collect (traverse start) |> Seq.distinct |> Seq.toList
-        result |> Seq.minMap _.Start |> base.Answer.Submit
+
+        ranges
+        |> Seq.collect (traverse start)
+        |> Seq.minMap _.Start
+        |> base.Answer.Submit

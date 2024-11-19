@@ -22,6 +22,7 @@
     <Compile Include="Common\Seq.fs" />
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Program.fs" />
+    <Content Include=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
