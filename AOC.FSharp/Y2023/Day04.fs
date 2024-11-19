@@ -16,7 +16,7 @@ type Day04() =
 
         let parse =
             function
-            | Match pattern [ id; pot; jackpot ] ->
+            | MatchValue pattern [ id; pot; jackpot ] ->
                 Some
                     { id = int id
                       count = (pot, jackpot) |> map (String.split " ") ||> Seq.intersect |> Seq.length }
