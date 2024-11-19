@@ -20,6 +20,8 @@
     <Compile Include="Common\regexPatternMatching.fs" />
     <Compile Include="Common\string.fs" />
     <Compile Include="Common\Seq.fs" />
+    <Compile Include="Common\Option.fs" />
+    <Compile Include="Common\Operators.fs" />
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Program.fs" />
     <Content Include=".editorconfig" />

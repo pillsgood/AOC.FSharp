@@ -40,6 +40,8 @@ type Day05() =
                             { Range = { Start = src; End = src + len - 1L }; Offset = dst - src } ] } ]
         | _ -> []
 
+    let start = maps |> Seq.tryFind (fun m -> m.SrcName = "seed")
+
     [<Test>]
     member _.Part1() =
         let seeds =
@@ -65,7 +67,6 @@ type Day05() =
 
             | None -> seed
 
-        let start = maps |> Seq.tryFind (fun m -> m.SrcName = "seed")
         seeds |> Seq.minMap (traverse start) |> base.Answer.Submit
 
     [<Test>]
@@ -80,26 +81,16 @@ type Day05() =
             let (|After|_|) src = src.End > dst.End && src.Start >= dst.End
 
             match src with
-            | Before ->
-                let segment = { src with End = dst.Start - 1L }
-                let remainder = { dst with End = src.End }
-                Some(segment, Some remainder)
+            | Before -> Some({ src with End = dst.Start - 1L }, Some { dst with End = src.End })
             | Overlap ->
                 let offset range =
                     { Start = range.Start + instruction.Offset; End = range.End + instruction.Offset }
 
                 let segment = { Start = (max src.Start dst.Start); End = (min src.End dst.End) }
-
-                let remainder =
-                    if segment.End < src.End then
-                        Some { Start = segment.End + 1L; End = src.End }
-                    else
-                        None
+                let remainder = (segment.End < src.End) ?-> { Start = segment.End + 1L; End = src.End }
 
                 Some(offset segment, remainder)
-            | After ->
-                let segment = { Start = dst.End + 1L; End = src.End }
-                Some(segment, None)
+            | After -> Some({ src with Start = dst.End + 1L }, None)
             | _ -> Some(src, None)
 
         let split (def: MapDefinition) (range: Range) =
@@ -108,21 +99,20 @@ type Day05() =
                 |> List.filter (_.Range >> intersects range)
                 |> List.sortBy _.Range.Start
 
-            let unfold (maps: MapInstruction list) (range: Range option) : (Range * Range option) option =
+            Some range
+            |> Seq.unfold (fun range ->
                 match range with
                 | Some range ->
-                    match (maps |> Seq.tryFind (_.Range >> intersects range)) with
+                    match (instructions |> Seq.tryFind (_.Range >> intersects range)) with
                     | Some map -> split map range
                     | None -> Some(range, None)
-                | None -> None
-
-            Some range |> Seq.unfold (unfold instructions) |> Seq.toList
+                | None -> None)
 
         let rec traverse (map: MapDefinition option) (range: Range) : Range seq =
             match map with
             | Some source ->
                 let next = maps |> Seq.tryFind (fun m -> m.SrcName = source.DstName)
-                split source range |> Seq.collect (traverse next) |> Seq.distinct
+                split source range |> Seq.collect (traverse next)
             | None -> Seq.singleton range
 
         let ranges =
@@ -135,8 +125,6 @@ type Day05() =
                     | [| start; len |] -> Some { Start = start; End = start + len - 1L }
                     | _ -> None)
             | _ -> []
-
-        let start = maps |> Seq.tryFind (fun m -> m.SrcName = "seed")
 
         ranges
         |> Seq.collect (traverse start)
