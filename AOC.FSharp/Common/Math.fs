@@ -1,5 +1,5 @@
 ﻿[<AutoOpen>]
-module AOC.FSharp.Common.math
+module Math
 
 open System.Numerics
 

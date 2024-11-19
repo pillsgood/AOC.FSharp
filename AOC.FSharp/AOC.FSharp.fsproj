@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <Compile Include="Setup.fs" />
-    <Compile Include="Common\math.fs" />
+    <Compile Include="Common\Math.fs" />
     <Compile Include="Common\IVector.fs"/>
     <Compile Include="Common\vector2.fs"/>
     <Compile Include="Common\vector.fs"/>
@@ -22,6 +22,7 @@
     <Compile Include="Common\Seq.fs" />
     <Compile Include="Common\Option.fs" />
     <Compile Include="Common\Operators.fs" />
+    <Compile Include="Common\Math64.fs" />
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Program.fs" />
     <Content Include=".editorconfig" />
