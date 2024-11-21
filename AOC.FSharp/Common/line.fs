@@ -2,6 +2,7 @@
 
 open System.Numerics
 open System.Runtime.CompilerServices
+open vector
 
 [<Struct>]
 type line<'v, 'u when 'v :> IVector<'v, 'u> and 'u :> INumber<'u>> =
@@ -11,9 +12,7 @@ type line<'v, 'u when 'v :> IVector<'v, 'u> and 'u :> INumber<'u>> =
 
         new(a: 'v, b: 'v) = { a = a; b = b }
 
-        new(line: line<_, _>, ?a: 'v, ?b: 'v) =
-            { a = defaultArg a line.a
-              b = defaultArg b line.b }
+        new(line: line<_, _>, ?a: 'v, ?b: 'v) = { a = defaultArg a line.a; b = defaultArg b line.b }
     end
 
     member this.ab = this.b - this.a

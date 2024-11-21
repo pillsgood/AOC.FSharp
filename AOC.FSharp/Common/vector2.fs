@@ -11,31 +11,23 @@ type vector2<'u & #INumber<'u>> =
 
         new(x: 'u, y: 'u) = { x = x; y = y }
 
-        new(v: vector2<'u>, ?x: 'u, ?y: 'u) =
-            { x = defaultArg x v.x
-              y = defaultArg y v.y }
+        new(v: vector2<'u>, ?x: 'u, ?y: 'u) = { x = defaultArg x v.x; y = defaultArg y v.y }
     end
 
-    static member (+)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> =
-        vector2 (left.x + right.x, left.y + right.y)
+    static member (+)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> = vector2 (left.x + right.x, left.y + right.y)
 
-    static member (-)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> =
-        vector2 (left.x - right.x, left.y - right.y)
+    static member (-)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> = vector2 (left.x - right.x, left.y - right.y)
 
-    static member (*)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> =
-        vector2 (left.x * right.x, left.y * right.y)
+    static member (*)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> = vector2 (left.x * right.x, left.y * right.y)
 
-    static member (/)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> =
-        vector2 (left.x / right.x, left.y / right.y)
+    static member (/)(left: vector2<'u>, right: vector2<'u>) : vector2<'u> = vector2 (left.x / right.x, left.y / right.y)
 
     static member (~+)(value: vector2<_>) = value
     static member (~-)(value: vector2<_>) = vector2 (-value.x, -value.y)
 
-    static member (*)(left: vector2<'u>, right: 'u) : vector2<'u> =
-        vector2 (left.x * right, left.y * right)
+    static member (*)(left: vector2<'u>, right: 'u) : vector2<'u> = vector2 (left.x * right, left.y * right)
 
-    static member (/)(left: vector2<'u>, right: 'u) : vector2<'u> =
-        vector2 (left.x / right, left.y / right)
+    static member (/)(left: vector2<'u>, right: 'u) : vector2<'u> = vector2 (left.x / right, left.y / right)
 
     member this.Item
         with get index =
@@ -76,3 +68,10 @@ type vector2<'u & #INumber<'u>> =
 
 type int2 = vector2<int>
 type float2 = vector2<float32>
+
+module int2 =
+    let up = int2 (0, 1)
+    let right = int2 (1, 0)
+    let down = int2 (0, -1)
+    let left = int2 (-1, 0)
+    let cardinalDirections = [| up; right; down; left |]
