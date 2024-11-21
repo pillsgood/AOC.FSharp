@@ -2,40 +2,39 @@
 
 open Microsoft.FSharp.Core
 open NUnit.Framework
-open Pillsgood.AdventOfCode
 open AOC.FSharp.Common
+open Pillsgood.AdventOfCode
 
-type Pipe =
-    | NS
-    | WE
-    | NE
-    | NW
-    | SW
-    | SE
 
-    member this.connections =
-        match this with
-        | NS -> (int2.up, int2.down)
-        | WE -> (int2.left, int2.right)
-        | NE -> (int2.up, int2.right)
-        | NW -> (int2.up, int2.left)
-        | SW -> (int2.down, int2.left)
-        | SE -> (int2.down, int2.right)
+[<AocFixture>]
+module Day10 =
+    type Pipe =
+        | NS
+        | WE
+        | NE
+        | NW
+        | SW
+        | SE
 
-type Tile =
-    | Pipe of position: int2 * pipe: Pipe
-    | Ground of position: int2
-    | Start of position: int2
+        member this.connections =
+            match this with
+            | NS -> (int2.up, int2.down)
+            | WE -> (int2.left, int2.right)
+            | NE -> (int2.up, int2.right)
+            | NW -> (int2.up, int2.left)
+            | SW -> (int2.down, int2.left)
+            | SE -> (int2.down, int2.right)
 
-    member this.position =
-        match this with
-        | Pipe(pos, _) -> pos
-        | Ground(pos) -> pos
-        | Start(pos) -> pos
+    type Tile =
+        | Pipe of position: int2 * pipe: Pipe
+        | Ground of position: int2
+        | Start of position: int2
 
-[<TestFixture>]
-type Day10() =
-    inherit AocFixture()
+        member this.position =
+            match this with
+            | Pipe(pos, _) -> pos
+            | Ground(pos) -> pos
+            | Start(pos) -> pos
 
     let input =
         """
@@ -47,7 +46,7 @@ type Day10() =
         """
         |> String.splitLines
 
-    // let input = base.Input.Get<string[]>()
+    // let input = Input.fetch<string[]>
     let (width, height) = (input[0].Length, input.Length)
 
     let map =
@@ -102,7 +101,7 @@ type Day10() =
 
 
     [<Test>]
-    member _.Part1() =
+    let Part1 () =
         let rec traverse (current: Tile) (previous: Tile option) =
             let next =
                 match current, previous with
@@ -124,4 +123,4 @@ type Day10() =
 
 
     [<Test>]
-    member _.Part2() = ignore
+    let Part2 () = ignore

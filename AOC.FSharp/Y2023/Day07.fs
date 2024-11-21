@@ -6,25 +6,25 @@ open Pillsgood.AdventOfCode
 open AOC.FSharp.Common
 
 
-type HandType =
-    | HighCard = 0
-    | Pair = 1
-    | TwoPair = 2
-    | Three = 3
-    | FullHouse = 4
-    | Four = 5
-    | Five = 6
 
-type Hand =
-    { CardVector: BitVector64
-      CardSet: BitVector64
-      Order: int
-      Jokers: int
-      Bid: int }
+[<AocFixture>]
+module Day07 =
 
-[<TestFixture>]
-type Day07() =
-    inherit AocFixture()
+    type HandType =
+        | HighCard = 0
+        | Pair = 1
+        | TwoPair = 2
+        | Three = 3
+        | FullHouse = 4
+        | Four = 5
+        | Five = 6
+
+    type Hand =
+        { CardVector: BitVector64
+          CardSet: BitVector64
+          Order: int
+          Jokers: int
+          Bid: int }
 
     let getRank =
         function
@@ -65,7 +65,7 @@ type Day07() =
                 |> Some
             | _ -> None
 
-        base.Input.Get<string[]>() |> Seq.choose parse |> Seq.toList
+        Input.fetch<string[]> |> Seq.choose parse |> Seq.toList
 
     let getType hand : HandType =
         let id = int (hand.CardVector.Data % 0xFuL)
@@ -79,8 +79,8 @@ type Day07() =
         | 7, _ -> HandType.TwoPair
         | 6, _ -> HandType.Pair
         | _ -> HandType.HighCard
-        
-    
+
+
     let getJokerType hand : HandType =
         let id = int (hand.CardVector.Data % 0xFuL)
         let jokers = hand.Jokers
@@ -101,15 +101,15 @@ type Day07() =
         | _ -> getType hand
 
     [<Test>]
-    member _.Part1() =
+    let Part1 () =
         hands
         |> Seq.sortBy (fun h -> (getType h, h.Order))
         |> Seq.mapi (fun i h -> (i + 1) * h.Bid)
         |> Seq.sum
-        |> base.Answer.Submit
+        |> Answer.submit
 
     [<Test>]
-    member _.Part2() =
+    let Part2 () =
         let reinterpretJokers hand =
             let rank = getRank 'J'
             let trim section v = v |> BitVector64.updateAt section (fun _ -> 0uL)
@@ -133,4 +133,4 @@ type Day07() =
         |> Seq.sortBy (fun h -> (getJokerType h, h.Order))
         |> Seq.mapi (fun i h -> (i + 1) * h.Bid)
         |> Seq.sum
-        |> base.Answer.Submit
+        |> Answer.submit

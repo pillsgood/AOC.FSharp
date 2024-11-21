@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="Setup.fs" />
+    <Compile Include="Common\AOC.fs" />
     <Compile Include="Common\Math.fs" />
     <Compile Include="Common\IVector.fs"/>
     <Compile Include="Common\vector2.fs"/>
@@ -43,9 +44,10 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Pillsgood.AdventOfCode" Version="1.0.1" />
-    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="1.0.1" />
+    <PackageReference Include="Pillsgood.AdventOfCode" Version="1.1.2" />
+    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="1.1.2" />
     <PackageReference Update="FSharp.Core" Version="9.0.100" />
+    <PackageReference Include="Splat" Version="15.2.22" />
   </ItemGroup>
 
 </Project>

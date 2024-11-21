@@ -5,39 +5,30 @@ open System.Text.RegularExpressions
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 
-[<TestFixture>]
-type Day01() =
-    inherit AocFixture()
-    let mutable input: string[] = [||]
-
-    [<OneTimeSetUp>]
-    member _.Setup() = input <- base.Input.Get<string[]>()
+[<AocFixture>]
+module Day01 =
+    let input: string[] = Input.fetch
 
     [<Test>]
-    member _.Part1() =
+    let Part1 () =
         let getCalibrationValue row =
             let findDigit search = row |> search Char.IsDigit |> string
             let first = findDigit Seq.find
             let last = findDigit Seq.findBack
             first + last |> int
 
-        input |> Seq.sumBy getCalibrationValue |> base.Answer.SubmitAsync
+        input |> Seq.sumBy getCalibrationValue |> Answer.submit
 
     [<Test>]
-    member _.Part2() =
-        let numbers =
-            [| "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" |]
+    let Part2 () =
+        let numbers = [| "one"; "two"; "three"; "four"; "five"; "six"; "seven"; "eight"; "nine" |]
 
         let pattern = numbers |> Seq.append (Seq.singleton @"\d") |> String.concat "|"
 
         let forward = Regex(pattern)
         let backward = Regex(pattern, RegexOptions.RightToLeft)
 
-        let (|Digit|_|) (str: string) =
-            if str.Length = 1 && Char.IsDigit(str[0]) then
-                Some(str[0])
-            else
-                None
+        let (|Digit|_|) (str: string) = if str.Length = 1 && Char.IsDigit(str[0]) then Some(str[0]) else None
 
         let getCalibrationValue row =
             let find (rgx: Regex) : char =
@@ -49,4 +40,4 @@ type Day01() =
             let last = find backward |> string
             first + last |> int
 
-        input |> Seq.sumBy getCalibrationValue |> base.Answer.SubmitAsync
+        input |> Seq.sumBy getCalibrationValue |> Answer.submit

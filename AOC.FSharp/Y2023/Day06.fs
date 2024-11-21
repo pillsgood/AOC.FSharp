@@ -5,13 +5,11 @@ open NUnit.Framework
 open Pillsgood.AdventOfCode
 open AOC.FSharp.Common
 
-type Race = { Time: int64; Distance: int64 }
+[<AocFixture>]
+module Day06 =
+    type Race = { Time: int64; Distance: int64 }
 
-[<TestFixture>]
-type Day06() =
-    inherit AocFixture()
-
-    let input = base.Input.Get<string>()
+    let input = Input.fetch<string>
 
     let records =
         let pattern = Regex(@"Time:(?:\s*(?<time>\d+))+\nDistance:(?:\s*(?<distance>\d+))+")
@@ -30,14 +28,14 @@ type Day06() =
         (int64 v * 2L) + (race.Time % 2L - 1L)
 
     [<Test>]
-    member _.Part1() = records |> Seq.map eval |> Seq.reduce (*) |> base.Answer.Submit
+    let Part1 () = records |> Seq.map eval |> Seq.reduce (*) |> Answer.submit
 
     [<Test>]
-    member _.Part2() =
+    let Part2 () =
         let concat f a b = int64 (((f >> string) a) + ((f >> string) b))
 
         let record =
             records
             |> Seq.reduce (fun a b -> { Time = concat _.Time a b; Distance = concat _.Distance a b })
 
-        eval record |> base.Answer.Submit
+        eval record |> Answer.submit

@@ -5,11 +5,9 @@ open NUnit.Framework
 open Pillsgood.AdventOfCode
 open AOC.FSharp.Common
 
-[<TestFixture>]
-type Day09() =
-    inherit AocFixture()
-
-    let input = base.Input.Get<string[]>()
+[<AocFixture>]
+module Day09 =
+    let input = Input.fetch<string[]>
 
     let sequences =
         input
@@ -30,7 +28,7 @@ type Day09() =
         scan xs 0L
 
     [<Test>]
-    member _.Part1() = sequences |> Seq.sumBy extrapolate |> base.Answer.Submit
+    let Part1 () = sequences |> Seq.sumBy extrapolate |> Answer.submit
 
     [<Test>]
-    member _.Part2() = sequences |> List.map List.rev |> Seq.sumBy extrapolate |> base.Answer.Submit
+    let Part2 () = sequences |> List.map List.rev |> Seq.sumBy extrapolate |> Answer.submit

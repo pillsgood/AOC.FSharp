@@ -1,32 +1,28 @@
 ﻿namespace AOC.FSharp.Y2023
 
-open System
 open System.Text.RegularExpressions
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 open AOC.FSharp.Common
-open FsUnit
 
-type Direction =
-    | Left
-    | Right
+[<AocFixture>]
+module Day08 =
+    type Direction =
+        | Left
+        | Right
 
-type Node =
-    { Id: string
-      Left: string
-      Right: string }
+    type Node =
+        { Id: string
+          Left: string
+          Right: string }
 
-    member this.Item
-        with get dir =
-            match dir with
-            | Left -> this.Left
-            | Right -> this.Right
+        member this.Item
+            with get dir =
+                match dir with
+                | Left -> this.Left
+                | Right -> this.Right
 
-[<TestFixture>]
-type Day08() =
-    inherit AocFixture()
-
-    let input = base.Input.Get<string[]>()
+    let input = Input.fetch<string[]>
 
     let instructions =
         input[0]
@@ -55,10 +51,10 @@ type Day08() =
         |> Seq.length
 
     [<Test>]
-    member _.Part1() = network["AAA"] |> traverse (fun node -> node.Id <> "ZZZ") |> base.Answer.Submit
+    let Part1 () = network["AAA"] |> traverse (fun node -> node.Id <> "ZZZ") |> Answer.submit
 
     [<Test>]
-    member _.Part2() =
+    let Part2 () =
         let start = network |> Map.values |> Seq.filter _.Id.EndsWith("A")
 
         let lcm xs =
@@ -72,4 +68,4 @@ type Day08() =
         |> Seq.map (traverse (fun n -> not (n.Id.EndsWith "Z")))
         |> Seq.map int64
         |> lcm
-        |> base.Answer.Submit
+        |> Answer.submit

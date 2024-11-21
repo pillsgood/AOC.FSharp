@@ -6,20 +6,20 @@ open Microsoft.FSharp.Core
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 
-type Range = { Start: int64; End: int64 }
 
-type MapDefinition =
-    { SrcName: string
-      DstName: string
-      Instructions: MapInstruction list }
 
-and MapInstruction = { Range: Range; Offset: int64 }
+[<AocFixture>]
+module Day05 =
+    type Range = { Start: int64; End: int64 }
 
-[<TestFixture>]
-type Day05() =
-    inherit AocFixture()
+    type MapDefinition =
+        { SrcName: string
+          DstName: string
+          Instructions: MapInstruction list }
 
-    let input = base.Input.Get<string[]>()
+    and MapInstruction = { Range: Range; Offset: int64 }
+
+    let input: string[] = Input.fetch
 
     let maps =
         let input = input[1..] |> String.concat "\n"
@@ -43,7 +43,7 @@ type Day05() =
     let start = maps |> Seq.tryFind (fun m -> m.SrcName = "seed")
 
     [<Test>]
-    member _.Part1() =
+    let Part1 () =
         let seeds =
             match input[0] with
             | Matches (Regex(@"\d+")) parts -> parts |> List.map (_.Value >> int64)
@@ -67,10 +67,10 @@ type Day05() =
 
             | None -> seed
 
-        seeds |> Seq.minMap (traverse start) |> base.Answer.Submit
+        seeds |> Seq.minMap (traverse start) |> Answer.submit
 
     [<Test>]
-    member _.Part2() =
+    let Part2 () =
         let intersects src dst = src.End > dst.Start && src.Start < dst.End
 
         let split (instruction: MapInstruction) (src: Range) : (Range * Range option) option =
@@ -126,7 +126,4 @@ type Day05() =
                     | _ -> None)
             | _ -> []
 
-        ranges
-        |> Seq.collect (traverse start)
-        |> Seq.minMap _.Start
-        |> base.Answer.Submit
+        ranges |> Seq.collect (traverse start) |> Seq.minMap _.Start |> Answer.submit

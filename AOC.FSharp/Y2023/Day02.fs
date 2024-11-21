@@ -4,25 +4,20 @@ open NUnit.Framework
 open FSharp.Text.RegexProvider
 open Pillsgood.AdventOfCode
 
-type Color =
-    | Red
-    | Green
-    | Blue
+[<AocFixture>]
+module Day02 =
+    type Color =
+        | Red
+        | Green
+        | Blue
 
-type CubeSet = { Count: int; Color: Color }
-type Game = { GameId: int; Sets: CubeSet list }
+    type CubeSet = { Count: int; Color: Color }
+    type Game = { GameId: int; Sets: CubeSet list }
 
-type SetPattern = Regex< @"(?<count>\d+) (?<color>red|green|blue)" >
-type GamePattern = Regex< @"Game (?<gameId>\d+):" >
+    type SetPattern = Regex< @"(?<count>\d+) (?<color>red|green|blue)" >
+    type GamePattern = Regex< @"Game (?<gameId>\d+):" >
 
-[<TestFixture>]
-type Day02() =
-    inherit AocFixture()
-
-    let mutable input: Game[] = [||]
-
-    [<OneTimeSetUp>]
-    member _.Setup() =
+    let mutable input: Game[] =
         let color str =
             match str with
             | "red" -> Red
@@ -32,21 +27,18 @@ type Day02() =
 
         let cubeSets str =
             SetPattern().TypedMatches str
-            |> Seq.map (fun m ->
-                { Count = int m.count.Value
-                  Color = color m.color.Value })
+            |> Seq.map (fun m -> { Count = int m.count.Value; Color = color m.color.Value })
 
         let parse line : Game =
             let capture = GamePattern().TypedMatch line
             let sets = cubeSets line |> Seq.toList
 
-            { GameId = int capture.gameId.Value
-              Sets = sets }
+            { GameId = int capture.gameId.Value; Sets = sets }
 
-        input <- base.Input.Get<string[]>() |> Array.map parse
+        Input.fetch |> Array.map parse
 
     [<Test>]
-    member _.Part1() =
+    let Part1 () =
         let isLegalSet (set: CubeSet) =
             match set with
             | { Color = Red } -> set.Count <= 12
@@ -56,10 +48,10 @@ type Day02() =
         input
         |> Seq.where (fun game -> game.Sets |> Seq.forall isLegalSet)
         |> Seq.sumBy _.GameId
-        |> base.Answer.Submit
+        |> Answer.submit
 
     [<Test>]
-    member _.Part2() =
+    let Part2 () =
         let power (game: Game) =
             let getMax f = Seq.maxBy f >> f
 
@@ -68,4 +60,4 @@ type Day02() =
             |> Seq.map (fun (_, sets) -> sets |> getMax _.Count)
             |> Seq.fold (*) 1
 
-        input |> Seq.sumBy power |> base.Answer.Submit
+        input |> Seq.sumBy power |> Answer.submit
