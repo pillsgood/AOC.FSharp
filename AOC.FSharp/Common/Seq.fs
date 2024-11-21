@@ -19,3 +19,13 @@ let zipAll (lists: 'a seq seq) : 'a seq seq =
         while enumerators |> Seq.forall _.MoveNext() do
             yield enumerators |> Seq.map _.Current
     }
+
+let scanUnfold generator state =
+    seq {
+        let mutable opt = generator state None
+
+        while Option.isSome opt do
+            let current, next = opt.Value
+            yield current
+            opt <- generator next (Some current)
+    }

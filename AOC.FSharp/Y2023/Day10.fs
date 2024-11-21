@@ -1,5 +1,6 @@
 ﻿namespace AOC.FSharp.Y2023
 
+open Microsoft.FSharp.Core
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 open AOC.FSharp.Common
@@ -12,7 +13,7 @@ type Pipe =
     | SW
     | SE
 
-    member this.connections: int2 * int2 =
+    member this.connections =
         match this with
         | NS -> (int2.up, int2.down)
         | WE -> (int2.left, int2.right)
@@ -38,20 +39,16 @@ type Day10() =
 
     let input =
         """
-        ..........
-        .S------7.
-        .|F----7|.
-        .||....||.
-        .||....||.
-        .|L-7F-J|.
-        .|..||..|.
-        .L--JL--J.
-        ..........
+        ..F7.
+        .FJ|.
+        SJ.L7
+        |F--J
+        LJ...
         """
         |> String.splitLines
 
-    let input = base.Input.Get<string[]>()
-    let (width, height) = (input |> Seq.head |> Seq.length, input.Length)
+    // let input = base.Input.Get<string[]>()
+    let (width, height) = (input[0].Length, input.Length)
 
     let map =
         let parse position =
@@ -98,23 +95,33 @@ type Day10() =
             | _ -> None
         | _ -> None
 
+    let getStartConnection current =
+        getNeighbors current
+        |> Seq.tryFind (flip canEnter current.position)
+        |> Option.map (fun exit -> exit.position - current.position)
+
 
     [<Test>]
     member _.Part1() =
-        let rec traverse acc current previous =
+        let rec traverse (current: Tile) (previous: Tile option) =
             let next =
-                getConnection current previous
+                match current, previous with
+                | Tile.Start _, None -> getStartConnection current
+                | _, Some previous -> getConnection current previous
+                | _ -> None
                 |> Option.map (fun exit -> map |> Map.find (current.position + exit))
 
-            match next with
-            | Some nextTile -> traverse (acc + 1) nextTile current
-            | None -> acc
-
+            next
+            |> Option.bind (fun next ->
+                match next with
+                | Pipe _
+                | Start _ -> Some(current, next)
+                | _ -> None)
 
         let origin = map |> Map.findValue _.IsStart
-        let tile = getNeighbors origin |> Seq.find (flip canEnter origin.position)
+        let path = origin |> Seq.scanUnfold traverse |> Seq.toList
+        path |> Seq.length |> (fun i -> printfn $"{i / 2}")
 
-        (tile, origin) ||> traverse 0 |> (fun i -> (i + 1) / 2) |> base.Answer.Submit
 
     [<Test>]
     member _.Part2() = ignore
