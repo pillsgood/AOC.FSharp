@@ -36,18 +36,8 @@ module Day10 =
             | Ground(pos) -> pos
             | Start(pos) -> pos
 
-    let input =
-        """
-        ..F7.
-        .FJ|.
-        SJ.L7
-        |F--J
-        LJ...
-        """
-        |> String.splitLines
-
-    // let input = Input.fetch<string[]>
-    let (width, height) = (input[0].Length, input.Length)
+    let input: string[] = Input.fetch
+    let width, height = input[0].Length, input.Length
 
     let map =
         let parse position =

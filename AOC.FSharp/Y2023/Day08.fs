@@ -22,7 +22,7 @@ module Day08 =
                 | Left -> this.Left
                 | Right -> this.Right
 
-    let input = Input.fetch<string[]>
+    let input: string[] = Input.fetch
 
     let instructions =
         input[0]

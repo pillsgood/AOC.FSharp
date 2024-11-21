@@ -65,7 +65,7 @@ module Day07 =
                 |> Some
             | _ -> None
 
-        Input.fetch<string[]> |> Seq.choose parse |> Seq.toList
+        Input.fetch |> Seq.choose parse |> Seq.toList
 
     let getType hand : HandType =
         let id = int (hand.CardVector.Data % 0xFuL)

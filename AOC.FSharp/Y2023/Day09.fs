@@ -7,7 +7,7 @@ open AOC.FSharp.Common
 
 [<AocFixture>]
 module Day09 =
-    let input = Input.fetch<string[]>
+    let input: string[] = Input.fetch
 
     let sequences =
         input

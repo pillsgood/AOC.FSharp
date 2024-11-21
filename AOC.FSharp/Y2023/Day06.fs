@@ -9,7 +9,7 @@ open AOC.FSharp.Common
 module Day06 =
     type Race = { Time: int64; Distance: int64 }
 
-    let input = Input.fetch<string>
+    let input: string = Input.fetch
 
     let records =
         let pattern = Regex(@"Time:(?:\s*(?<time>\d+))+\nDistance:(?:\s*(?<distance>\d+))+")
