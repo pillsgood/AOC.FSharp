@@ -81,6 +81,17 @@ module Day07 =
         | _ -> HandType.HighCard
 
 
+    let promote handType jokers : HandType =
+        match handType, jokers with
+        | HandType.Four, _ -> HandType.Five
+        | HandType.FullHouse, _ -> HandType.Five
+        | HandType.Three, _ -> HandType.Four
+        | HandType.TwoPair, 2 -> HandType.Four
+        | HandType.TwoPair, 1 -> HandType.FullHouse
+        | HandType.Pair, _ -> HandType.Three
+        | HandType.HighCard, _ -> HandType.Pair
+        | _ -> handType
+
     let getJokerType hand : HandType =
         let id = int (hand.CardVector.Data % 0xFuL)
         let jokers = hand.Jokers

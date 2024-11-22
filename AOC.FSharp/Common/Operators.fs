@@ -9,4 +9,8 @@ let tap f x =
 
 let flip f x y = f y x
 
-let negate f x = not (f x)
+let inline (!) f x = not (f x)
+let inline (!!) f x y = not (f x y)
+let inline (!!!) f x y z = not (f x y z)
+
+let (!=) = (<>)

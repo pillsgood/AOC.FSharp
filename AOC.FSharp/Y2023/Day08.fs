@@ -51,7 +51,7 @@ module Day08 =
         |> Seq.length
 
     [<Test>]
-    let Part1 () = network["AAA"] |> traverse (fun node -> node.Id <> "ZZZ") |> Answer.submit
+    let Part1 () = network["AAA"] |> traverse (fun n -> n.Id != "ZZZ") |> Answer.submit
 
     [<Test>]
     let Part2 () =
