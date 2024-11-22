@@ -21,7 +21,7 @@ module Day11 =
             | _ -> None)
         |> Seq.toList
 
-    let findExpansions (c: vector2.Component) =
+    let findExpansions (c: vector.Component) =
         let set =
             Seq.init dim[c] id
             |> Seq.filter (fun i -> map |> Seq.forall (fun v -> v[c] != i))
@@ -31,7 +31,12 @@ module Day11 =
         |> Seq.map (fun i -> i, set |> Seq.filter (fun j -> j < i) |> Seq.length)
         |> Map
 
-    let expansion = {| x = findExpansions vector2.Component.x; y = findExpansions vector2.Component.y |}
+    let expansion = {| x = findExpansions vector.Component.x; y = findExpansions vector.Component.y |}
+
+    let getPairs (map: 'a list) : ('a * 'a) seq =
+        map
+        |> Seq.indexed
+        |> Seq.collect (fun (i, v) -> ([ v ], map[(i + 1) ..]) ||> Seq.allPairs)
 
     [<Test>]
     let Part1 () =
@@ -40,14 +45,9 @@ module Day11 =
             let y = expansion.y |> Map.find position.y
             position + int2 (x, y)
 
-        let map = map |> List.map expand
-
-        let getPairs (map: 'a list) : ('a * 'a) seq =
-            map
-            |> Seq.indexed
-            |> Seq.collect (fun (i, v) -> ([ v ], map[(i + 1) ..]) ||> Seq.allPairs)
-
-        getPairs map
+        map
+        |> List.map expand
+        |> getPairs
         |> Seq.sumBy (fun (l, r) -> vector.manhattan (l - r))
         |> Answer.submit
 
@@ -59,13 +59,8 @@ module Day11 =
             let y = expansion.y |> Map.find position.y
             position + (int2 (x, y) * 999999)
 
-        let map = map |> List.map expand
-
-        let getPairs (map: 'a list) : ('a * 'a) seq =
-            map
-            |> Seq.indexed
-            |> Seq.collect (fun (i, v) -> ([ v ], map[(i + 1) ..]) ||> Seq.allPairs)
-
-        getPairs map
+        map
+        |> List.map expand
+        |> getPairs
         |> Seq.sumBy (fun (l, r) -> int64 (vector.manhattan (l - r)))
         |> Answer.submit
