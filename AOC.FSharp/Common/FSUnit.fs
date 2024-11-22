@@ -1,0 +1,3 @@
+﻿module FSUnit
+
+let pass = ()
