@@ -3,6 +3,15 @@
 open System.Numerics
 open Microsoft.FSharp.Core
 
+
+module vector =
+    type Component =
+        | x = 0
+        | y = 1
+        | z = 2
+
+open vector
+
 [<Struct>]
 type vector2<'u & #INumber<'u>> =
     struct
@@ -30,16 +39,20 @@ type vector2<'u & #INumber<'u>> =
     static member (/)(left: vector2<'u>, right: 'u) : vector2<'u> = vector2 (left.x / right, left.y / right)
 
     member this.Item
-        with get index =
+        with get (index: int) =
             match index with
             | 0 -> this.x
             | 1 -> this.y
             | _ -> invalidArg "index" "Index out of range"
-        and set index value =
+        and set (index: int) value =
             match index with
             | 0 -> this.x <- value
             | 1 -> this.y <- value
             | _ -> invalidArg "index" "Index out of range"
+
+    member this.Item
+        with get (c: Component) = this[int c]
+        and set (c: Component) value = this[int c] <- value
 
     static member one = vector2 ('u.One, 'u.One)
     static member zero = vector2 ('u.Zero, 'u.Zero)
@@ -68,6 +81,8 @@ type vector2<'u & #INumber<'u>> =
 
 type int2 = vector2<int>
 type float2 = vector2<float32>
+
+type long2 = vector2<int64>
 
 module int2 =
     let up = int2 (0, 1)
