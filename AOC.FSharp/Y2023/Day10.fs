@@ -1,15 +1,14 @@
 ﻿namespace AOC.FSharp.Y2023
 
 open System.Text.RegularExpressions
-open FSUnit
 open Microsoft.FSharp.Core
 open NUnit.Framework
 open AOC.FSharp.Common
 open Pillsgood.AdventOfCode
 
-
 [<AocFixture>]
 module Day10 =
+
     type Pipe =
         | NS
         | WE
@@ -39,7 +38,6 @@ module Day10 =
             | Start(pos) -> pos
 
     let input: string[] = Input.fetch
-
     let width, height = input[0].Length, input.Length
     let getPosition i = int2 (i % width, (height - 1) - i / width)
 
@@ -67,19 +65,11 @@ module Day10 =
         |> Seq.map (fun v -> map |> Map.tryFind (current.position + v))
         |> Seq.choose id
 
-    let canEnter (tile: Tile) (current: int2) =
-        match tile with
-        | Tile.Ground _ -> false
-        | Tile.Start(position) -> vector.sqrDistance position current = 1
-        | Tile.Pipe(position, pipe) ->
-            let move = position - current
-            pipe.connections |> fun (a, b) -> move = -a || move = -b
-
-    let getConnection (tile: Tile) (current: Tile) : int2 option =
+    let getConnection (current: Tile) (tile: Tile) : int2 option =
         let move = tile.position - current.position
 
         match tile with
-        | Tile.Pipe(_, pipe) when current.position |> canEnter tile ->
+        | Tile.Pipe(_, pipe) ->
             match pipe.connections with
             | a, b when -a = move -> Some b
             | a, b when -b = move -> Some a
@@ -88,14 +78,14 @@ module Day10 =
 
     let getStartConnection current =
         getNeighbors current
-        |> Seq.tryFind (flip canEnter current.position)
+        |> Seq.tryFind (getConnection current >> Option.isSome)
         |> Option.map (fun exit -> exit.position - current.position)
 
     let traverse (current: Tile) (previous: Tile option) =
         let next =
             match current, previous with
             | Tile.Start _, None -> getStartConnection current
-            | _, Some previous -> getConnection current previous
+            | _, Some previous -> current |> getConnection previous
             | _ -> None
             |> Option.map (fun exit -> map |> Map.find (current.position + exit))
 
@@ -113,31 +103,24 @@ module Day10 =
         origin
         |> Seq.scanUnfold traverse
         |> Seq.length
-        |> (fun i -> i / 2)
+        |> (fun len -> len / 2)
         |> Answer.submit
-
 
     [<Test>]
     let Part2 () =
-        let path = origin |> Seq.scanUnfold traverse
+        let path = origin |> Seq.scanUnfold traverse |> Seq.map _.position |> Set
 
-        let mutable input = input |> Array.copy
-
-        map
-        |> Map.keys
-        |> Seq.except (path |> Seq.map _.position)
-        |> Seq.iter (fun p ->
-            let x, y = p.x, input.Length - (p.y + 1)
-            let mutable str: char array = input[y] |> Seq.toArray
-            str[x] <- '.'
-            input[y] <- new string (str))
+        let input =
+            [| for j, str in input |> Seq.indexed ->
+                   let contains i = Set.contains (int2 (i, height - 1 - j))
+                   str |> String.mapi (fun i c -> if path |> contains i then c else '.') |]
 
         let p1 = Regex("F-*7|L-*J")
         let p2 = Regex("F-*J|L-*7")
 
         let input =
             input
-            |> Seq.map (fun str -> p1.Replace(str, "O"))
+            |> Seq.map (fun str -> p1.Replace(str, ""))
             |> Seq.map (fun str -> p2.Replace(str, "|"))
             |> Seq.toList
 
