@@ -7,7 +7,7 @@ open Pillsgood.AdventOfCode
 [<AocFixture>]
 module Day11 =
     let input: string[] = Input.fetch
-    let dim = int2 (input |> Array.head |> _.Length, input |> Array.length)
+    let dim = input |> Array.dimensions
 
     let map: int2 list =
         let map2d f xs =
