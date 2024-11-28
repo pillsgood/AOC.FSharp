@@ -16,7 +16,7 @@ module Day09 =
             | _ -> None)
         |> Seq.toList
 
-    let rec extrapolate xs =
+    let extrapolate xs =
         let rec scan xs acc =
             let ds = xs |> Seq.pairwise |> Seq.map (fun (a, b) -> b - a) |> Seq.toList
             let i = acc + List.last xs

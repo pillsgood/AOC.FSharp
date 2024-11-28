@@ -38,7 +38,8 @@ module Day10 =
             | Start(pos) -> pos
 
     let input: string[] = Input.fetch
-    let width, height = input[0].Length, input.Length
+    let dimension = Array.dimensions input
+    let width, height = dimension.x, dimension.y
     let getPosition i = int2 (i % width, (height - 1) - i / width)
 
     let map =
