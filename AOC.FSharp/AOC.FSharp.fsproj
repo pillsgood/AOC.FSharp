@@ -28,6 +28,7 @@
     <Compile Include="Common\FSUnit.fs" />
     <Compile Include="Common\DimensionExt.fs"/>
     <Compile Include="Y2023\*.fs" />
+    <Compile Include="Y2024\*.fs" />
     <Compile Include="Program.fs" />
     <Content Include=".editorconfig" />
   </ItemGroup>
@@ -51,5 +52,7 @@
     <PackageReference Update="FSharp.Core" Version="9.0.100" />
     <PackageReference Include="Splat" Version="15.2.22" />
   </ItemGroup>
+
+
 
 </Project>
