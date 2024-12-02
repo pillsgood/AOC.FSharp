@@ -29,3 +29,10 @@ let scanUnfold generator state =
             yield current
             opt <- generator next (Some current)
     }
+
+let inline allEqualBy f source =
+    match Seq.tryHead source with
+    | Some first ->
+        let first = f first
+        source |> Seq.forall (fun x -> f x = first)
+    | None -> failwith "Source sequence is empty."
