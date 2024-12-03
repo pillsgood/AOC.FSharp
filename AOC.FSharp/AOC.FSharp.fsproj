@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="Setup.fs" />
+    <Compile Include="Common\Operators.fs"/>
     <Compile Include="Common\AOC.fs" />
     <Compile Include="Common\Math.fs" />
     <Compile Include="Common\IVector.fs"/>
@@ -18,15 +19,15 @@
     <Compile Include="Common\vector.fs"/>
     <Compile Include="Common\line.fs"/>
     <Compile Include="Common\rect.fs"/>
-    <Compile Include="Common\regexPatternMatching.fs" />
+    <Compile Include="Common\Regex.fs"/>
     <Compile Include="Common\string.fs" />
     <Compile Include="Common\Seq.fs" />
     <Compile Include="Common\Option.fs" />
-    <Compile Include="Common\Operators.fs" />
     <Compile Include="Common\Math64.fs" />
     <Compile Include="Common\Map.fs" />
     <Compile Include="Common\FSUnit.fs" />
     <Compile Include="Common\DimensionExt.fs"/>
+    <Compile Include="Common\FirstBuilder.fs"/>
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Y2024\*.fs" />
     <Compile Include="Program.fs" />

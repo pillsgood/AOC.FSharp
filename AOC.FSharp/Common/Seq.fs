@@ -1,6 +1,7 @@
 ﻿module Seq
 
 open System
+open System.Collections.Generic
 open System.Linq
 
 let addKey keySelector = Seq.map (fun x -> keySelector x, x) >> Map.ofSeq
@@ -11,6 +12,21 @@ let minMap (selector: 'a -> #IComparable) (source: 'a seq) = source.Min(selector
 
 let filteri (predicate: int -> 'a -> bool) (source: 'a seq) =
     source |> Seq.indexed |> Seq.filter (fun (i, x) -> predicate i x) |> Seq.map snd
+
+let splitBy predicate source =
+    seq {
+        let mutable acc = new List<'a>()
+
+        for x in source do
+            if predicate x then
+                if acc.Count > 0 then yield acc.ToArray()
+                acc.Clear()
+                acc.Add(x)
+            else
+                acc.Add(x)
+
+        yield acc.ToArray()
+    }
 
 let zipAll (lists: 'a seq seq) : 'a seq seq =
     let enumerators = lists |> Seq.map _.GetEnumerator() |> Seq.toArray
