@@ -90,3 +90,4 @@ module int2 =
     let down = int2 (0, -1)
     let left = int2 (-1, 0)
     let cardinalDirections = [| up; right; down; left |]
+    let ordinalDirections = [| up + right; right + down; down + left; left + up |]

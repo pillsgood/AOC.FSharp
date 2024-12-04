@@ -10,6 +10,8 @@ let intersect (left: 'a seq) (right: 'a seq) : 'a seq = left.Intersect(right)
 
 let minMap (selector: 'a -> #IComparable) (source: 'a seq) = source.Min(selector)
 
+let inline count predicate source = source |> Seq.filter predicate |> Seq.length
+
 let filteri (predicate: int -> 'a -> bool) (source: 'a seq) =
     source |> Seq.indexed |> Seq.filter (fun (i, x) -> predicate i x) |> Seq.map snd
 
