@@ -1,45 +1,26 @@
 ﻿namespace AOC.FSharp.Y2024
 
-open AOC.FSharp.Common
 open Microsoft.FSharp.Collections
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 
 [<AocFixture>]
-module Day03 =
+module Day02 =
 
-    let input: string = Input.fetch
+    let input: int array array = Input.fetch |> Array.map (String.split " " >> (Array.map int))
+
+    let validate (level: int seq) : bool =
+        let inline exclusive min max value = value >= min && value <= max
+
+        let isMonotonic = level |> Seq.pairwise |> Seq.allEqualBy (fun (i, j) -> sign (i - j))
+        let isGrowthInRange = level |> Seq.pairwise |> Seq.forall (fun (i, j) -> abs (i - j) |> exclusive 1 3)
+        isMonotonic && isGrowthInRange
 
     [<Test>]
-    let Part1 () =
-        input
-        |> Regex.matches @"mul\((\d+)\,(\d+)\)"
-        |> Seq.map (fun m -> int m.Groups[1].Value, int m.Groups[2].Value)
-        |> Seq.sumBy (fun (i, j) -> i * j)
-        |> Answer.submit
-
-    type Instruction =
-        | Mul of i: int * j: int
-        | Take
-        | Skip
+    let Part1 () = input |> Seq.filter validate |> Seq.length |> Answer.submit
 
     [<Test>]
     let Part2 () =
+        let testLevel (level: int array) = Seq.init level.Length (fun i -> level |> Seq.removeAt i) |> Seq.exists validate
 
-        let muls =
-            input
-            |> Regex.matches "mul\((\d+)\,(\d+)\)"
-            |> Seq.map (fun m -> m.Index, Mul(int m.Groups[1].Value, int m.Groups[2].Value))
-
-        let takes = input |> Regex.matches "do\(\)" |> Seq.map (fun m -> m.Index, Take)
-        let skips = input |> Regex.matches "don\'t\(\)" |> Seq.map (fun m -> m.Index, Skip)
-
-        Seq.concat [ muls; takes; skips ]
-        |> Seq.sortBy fst
-        |> Seq.map snd
-        |> Seq.splitBy (fun step -> step.IsSkip || step.IsTake)
-        |> Seq.collect (fun steps -> if (steps |> Array.head).IsSkip then Seq.empty else steps)
-        |> Seq.sumBy (function
-            | Mul(i, j) -> i * j
-            | _ -> 0)
-        |> Answer.submit
+        input |> Seq.filter testLevel |> Seq.length |> Answer.submit

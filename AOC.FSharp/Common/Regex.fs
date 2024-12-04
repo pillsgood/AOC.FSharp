@@ -7,6 +7,9 @@ open System.Text.RegularExpressions
 module Regex =
     let matches ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) input = Regex.Matches(input, pattern)
 
+    let replace ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) (replacement: string) input =
+        Regex.Replace(input, pattern, replacement)
+
     module Group =
         let tryFindValue key (collection: GroupCollection) =
             match collection.TryGetValue(key) with
