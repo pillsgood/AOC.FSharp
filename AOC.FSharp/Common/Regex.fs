@@ -1,39 +1,39 @@
-﻿namespace AOC.FSharp.Common
+﻿[<AutoOpen>]
+module RegexExt
 
 open System.Diagnostics.CodeAnalysis
 open System.Text.RegularExpressions
 
+type private Rgx = Regex
 
-module Regex =
-    let matches ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) input = Regex.Matches(input, pattern)
+type Regex =
+    static member matches ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) input = Regex.Matches(input, pattern)
 
-    let replace ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) (replacement: string) input =
+    static member replace ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern: string) (replacement: string) (input: string) =
         Regex.Replace(input, pattern, replacement)
 
-    module Group =
-        let tryFindValue key (collection: GroupCollection) =
-            match collection.TryGetValue(key) with
-            | true, g when g.Success -> Some g.Value
-            | _ -> None
-
-        let tryFind key (collection: GroupCollection) =
-            match collection.TryGetValue(key) with
-            | true, g when g.Success -> Some g
-            | _ -> None
-
-
+type System.Text.RegularExpressions.Regex with
+    member inline this.replace (replacement: string) (input: string) = this.Replace(input, replacement)
 
 [<AutoOpen>]
-module RegexPattern =
-    let (|MatchValue|_|) (pattern: Regex) input =
+module RegexActivePattern =
+    let (|MatchValue|_|) (pattern: Rgx) input : string list option =
         let m = pattern.Match(input)
         if m.Success then Some(List.tail [ for g in m.Groups -> g.Value ]) else None
 
-    let (|Match|_|) (pattern: Regex) input =
+    let (|Match|_|) (pattern: Rgx) input : Group list option =
         let m = pattern.Match(input)
         if m.Success then Some(List.tail [ for g in m.Groups -> g ]) else None
 
-    let (|Matches|_|) (pattern: Regex) (input: string) : Match list option =
+    let (|Matches|_|) (pattern: Rgx) (input: string) : Match list option =
         let matches = pattern.Matches(input)
 
         if matches.Count > 0 then Some([ for m in matches -> m ]) else None
+
+    let (|MatchesValue|_|) (pattern: Rgx) (input: string) : string list list option =
+        let matches = pattern.Matches(input)
+
+        if matches.Count > 0 then
+            Some([ for m in matches -> List.tail [ for g in m.Groups -> g.Value ] ])
+        else
+            None

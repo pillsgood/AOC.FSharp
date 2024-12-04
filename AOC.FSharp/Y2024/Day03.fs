@@ -1,7 +1,6 @@
 ﻿namespace AOC.FSharp.Y2024
 
 open System.Text.RegularExpressions
-open AOC.FSharp.Common
 open Microsoft.FSharp.Collections
 open NUnit.Framework
 open Pillsgood.AdventOfCode
@@ -22,7 +21,7 @@ module Day03 =
     let Part2 () =
 
         let pattern = Regex(@"don't\(\).*?(do\(\))|don't\(\).*", options = RegexOptions.Singleline)
-        let input = (input, "") |> pattern.Replace
+        let input = input |> pattern.replace ""
 
         input
         |> Regex.matches @"mul\((\d+)\,(\d+)\)"
