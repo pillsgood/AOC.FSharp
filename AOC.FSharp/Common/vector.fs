@@ -1,4 +1,4 @@
-﻿module vector
+﻿module Vector
 
 open System.Numerics
 open AOC.FSharp.Common
@@ -18,6 +18,15 @@ let inline magnitude (vector: 'v & #IVector<_, 'u>) : 'r & #IRootFunctions<'r> =
 let inline manhattan (vector: 'v & #IVector<_, 'u>) : 'u & #INumber<'u> = components vector |> Seq.map 'u.Abs |> Seq.reduce (+)
 
 let inline sqrDistance (a: ^v) (b: ^v) : 'u = sqrMagnitude (a - b)
+
+let inline normalize (vector: 'v & #IVector<_, 'u>) =
+    let size = 'v.size - 1
+    let mutable vector = vector
+
+    for i = 0 to size do
+        vector[i] <- 'u.Clamp(vector[i], -'u.One, 'u.One)
+
+    vector
 
 let inline dot (left: ^v) (right: ^v) : 'u =
     let leftComponents = components left

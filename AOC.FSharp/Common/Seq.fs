@@ -54,3 +54,14 @@ let inline allEqualBy f source =
         let first = f first
         source |> Seq.forall (fun x -> f x = first)
     | None -> failwith "Source sequence is empty."
+
+let takeUntil predicate (source: seq<_>) =
+    seq {
+        use e = source.GetEnumerator()
+        let mutable condition = true
+
+        while e.MoveNext() && condition do
+            let latest = e.Current
+            yield latest
+            condition <- predicate latest
+    }

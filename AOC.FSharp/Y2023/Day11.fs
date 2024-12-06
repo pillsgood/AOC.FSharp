@@ -48,7 +48,7 @@ module Day11 =
         map
         |> List.map expand
         |> getPairs
-        |> Seq.sumBy (fun (l, r) -> vector.manhattan (l - r))
+        |> Seq.sumBy (fun (l, r) -> Vector.manhattan (l - r))
         |> Answer.submit
 
 
@@ -62,5 +62,5 @@ module Day11 =
         map
         |> List.map expand
         |> getPairs
-        |> Seq.sumBy (fun (l, r) -> int64 (vector.manhattan (l - r)))
+        |> Seq.sumBy (fun (l, r) -> int64 (Vector.manhattan (l - r)))
         |> Answer.submit

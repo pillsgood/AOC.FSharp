@@ -8,6 +8,8 @@ open Pillsgood.AdventOfCode
 
 [<AocFixture>]
 module Day03 =
+
+    open Rect
     let input: string[] = Input.fetch
 
     let symbols: (int2 * char) list =
