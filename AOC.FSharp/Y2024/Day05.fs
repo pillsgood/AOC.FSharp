@@ -11,8 +11,11 @@ module Day05 =
     let rules =
         input
         |> Array.filter _.Contains("|")
-        |> Array.map ((String.split "|") >> (Array.map int))
-        |> Seq.collect (fun c -> [ ((c[0], c[1]), -1); ((c[1], c[0]), 1) ])
+        |> Array.collect (
+            (String.split "|")
+            >> (Array.map int)
+            >> fun c -> [| (c[0], c[1]), -1; (c[1], c[0]), 1 |]
+        )
         |> Map
 
     let updates =
@@ -20,14 +23,12 @@ module Day05 =
         |> Array.filter _.Contains(",")
         |> Array.map (String.split "," >> (Seq.map int) >> Seq.toList)
 
-    let sort pages =
-        pages
-        |> List.sortWith (fun a b -> rules |> Map.tryFind (a, b) |> Option.defaultValue 0)
+    let sort = List.sortWith (fun a b -> rules |> Map.tryFind (a, b) |> Option.defaultValue 0)
 
     [<Test>]
     let Part1 () =
         updates
-        |> Seq.filter (fun pages -> sort pages |> (=) pages)
+        |> Seq.filter (fun pages -> sort pages = pages)
         |> Seq.sumBy (fun pages -> pages[pages.Length / 2])
         |> Answer.submit
 
