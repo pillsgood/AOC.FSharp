@@ -11,11 +11,8 @@ module Day05 =
     let rules =
         input
         |> Array.filter _.Contains("|")
-        |> Array.collect (
-            (String.split "|")
-            >> (Array.map int)
-            >> fun c -> [| (c[0], c[1]), -1; (c[1], c[0]), 1 |]
-        )
+        |> Seq.map ((String.split "|") >> (Array.map int))
+        |> Seq.collect (fun c -> [ (c[0], c[1]), -1; (c[1], c[0]), 1 ])
         |> Map
 
     let updates =
