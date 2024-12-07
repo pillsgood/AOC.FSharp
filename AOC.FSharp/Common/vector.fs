@@ -11,6 +11,15 @@ let inline components (vector: 'v & #IVector<_, 'u>) : ^u seq =
             yield vector[i]
     }
 
+let inline map (f: ^u -> ^u) (vector: 'v & #IVector<'v, 'u>) : 'v & #IVector<'v, 'u> =
+    let size = 'v.size - 1
+    let mutable result = vector
+
+    for i = 0 to size do
+        result[i] <- f vector[i]
+
+    result
+
 let inline sqrMagnitude (vector: ^v) : 'u = components vector |> Seq.map (fun x -> x * x) |> Seq.reduce (+)
 
 let inline magnitude (vector: 'v & #IVector<_, 'u>) : 'r & #IRootFunctions<'r> = vector |> sqrMagnitude |> 'r.CreateChecked |> 'r.Sqrt
@@ -19,14 +28,7 @@ let inline manhattan (vector: 'v & #IVector<_, 'u>) : 'u & #INumber<'u> = compon
 
 let inline sqrDistance (a: ^v) (b: ^v) : 'u = sqrMagnitude (a - b)
 
-let inline normalize (vector: 'v & #IVector<_, 'u>) =
-    let size = 'v.size - 1
-    let mutable vector = vector
-
-    for i = 0 to size do
-        vector[i] <- 'u.Clamp(vector[i], -'u.One, 'u.One)
-
-    vector
+let inline normalize (vector: 'v & #IVector<_, 'u>) = vector |> map (fun u -> 'u.Clamp(u, -'u.One, 'u.One))
 
 let inline dot (left: ^v) (right: ^v) : 'u =
     let leftComponents = components left
@@ -35,3 +37,5 @@ let inline dot (left: ^v) (right: ^v) : 'u =
     Seq.zip leftComponents rightComponents
     |> Seq.map (fun (l, r) -> l * r)
     |> Seq.reduce (+)
+
+let inline abs (vector: 'v & #IVector<'v, 'u>) : 'v = vector |> map 'u.Abs

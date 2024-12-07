@@ -64,4 +64,11 @@ module Rect =
         let max = r.max + size
         rect<'u>.minMax min max
 
+    let inline edgeContains (point: vector2<_>) (rect: rect<_>) =
+        let x = point.x >= rect.xMin && point.x <= rect.xMax
+        let y = point.y >= rect.yMin && point.y <= rect.yMax
+
+        (x && (point.y = rect.yMin || point.y = rect.yMax))
+        || (y && (point.x = rect.xMin || point.x = rect.xMax))
+
 type rectInt = rect<int>
