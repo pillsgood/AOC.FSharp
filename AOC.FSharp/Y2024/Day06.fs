@@ -1,9 +1,7 @@
 ﻿namespace AOC.FSharp.Y2024
 
 open System.Collections.Generic
-open System.Linq
 open AOC.FSharp.Common
-open FSharp.Collections.ParallelSeq
 open Microsoft.FSharp.Collections
 open Microsoft.FSharp.Core
 open NUnit.Framework
@@ -41,24 +39,22 @@ module Day06 =
         |> Seq.length
         |> Answer.submit
 
-
     [<Test>]
     let Part2 () =
         let canLoop (pos, dir) =
-            let set = HashSet<_>()
-
             (pos, dir)
             |> traverse (obstacles |> Set.add (pos + dir))
-            |> Seq.takeUntil set.Add
+            |> Seq.takeUntil (HashSet<_>()).Add
             |> Seq.countBy id
             |> Seq.exists (fun (_, c) -> c > 1)
 
-        (start, int2.up)
-        |> traverse obstacles
-        |> Seq.filter (fun (pos, dir) ->
-            let obs = pos + dir
-            not (obstacles.Contains(obs)) && bounds |> Rect.contains obs)
-        |> Seq.map (fun (pos, dir) -> pos + dir, canLoop (pos, dir))
-        |> Seq.distinctBy fst
-        |> Seq.count snd
-        |> Answer.submit
+        let path =
+            (start, int2.up)
+            |> traverse obstacles
+            |> Seq.filter (fun (pos, dir) ->
+                let obs = pos + dir
+                not (obstacles.Contains(obs)) && bounds |> Rect.contains obs)
+            |> Seq.distinctBy (fun (p, d) -> p + d)
+            |> Seq.toArray
+
+        path |> Array.Parallel.filter canLoop |> Array.length |> Answer.submit
