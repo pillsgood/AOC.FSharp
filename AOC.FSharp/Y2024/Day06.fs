@@ -52,8 +52,8 @@ module Day06 =
             (start, int2.up)
             |> traverse obstacles
             |> Seq.filter (fun (pos, dir) ->
-                let obs = pos + dir
-                not (obstacles.Contains(obs)) && bounds |> Rect.contains obs)
+                pos + dir
+                |> fun obs -> not (obstacles.Contains(obs)) && bounds |> Rect.contains obs)
             |> Seq.distinctBy (fun (p, d) -> p + d)
             |> Seq.toArray
 
