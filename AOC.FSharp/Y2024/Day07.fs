@@ -8,7 +8,7 @@ open Pillsgood.AdventOfCode
 [<AocFixture>]
 module Day07 =
     let input =
-        Input.fetch<string array>
+        Input.fetch
         |> Array.choose (function
             | Match (Regex @"(\d+)\:(?:\s?(\d+))+") group ->
                 Some(int64 group[0].Value, group[1].Captures |> Seq.map (_.Value >> int64) |> Seq.toArray)
@@ -16,7 +16,7 @@ module Day07 =
 
     type op = int64 -> int64 -> int64
 
-    let testCalibration (operators: op list) (expected: int64, values: int64 array) =
+    let test (operators: op list) (expected: int64, values: int64 array) =
         let baseLength = operators.Length
         let possibilities = pown baseLength (values.Length - 1)
 
@@ -27,7 +27,7 @@ module Day07 =
     [<Test>]
     let Part1 () =
         input
-        |> Array.Parallel.filter (testCalibration [ (+); (*) ])
+        |> Array.Parallel.filter (test [ (+); (*) ])
         |> Array.sumBy fst
         |> Answer.submit
 
@@ -36,6 +36,6 @@ module Day07 =
         let concat a b = a * pown 10L (max 1 (int (log10 (float (max 1L b))) + 1)) + b
 
         input
-        |> Array.Parallel.filter (testCalibration [ (+); (*); concat ])
+        |> Array.Parallel.filter (test [ (+); (*); concat ])
         |> Array.sumBy fst
         |> Answer.submit
