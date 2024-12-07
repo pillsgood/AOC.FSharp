@@ -17,12 +17,12 @@ module Day07 =
     type op = int64 -> int64 -> int64
 
     let test (operators: op list) (expected: int64, values: int64 array) =
-        let baseLength = operators.Length
-        let possibilities = pown baseLength (values.Length - 1)
+        let opLength = operators.Length
+        let possibilities = pown opLength (values.Length - 1)
 
         Seq.init possibilities (fun x ->
-            [ for i in 0 .. values.Length - 2 -> operators[(x / (pown baseLength i)) % baseLength] ])
-        |> Seq.exists (fun ops -> values |> Seq.reducei (fun a b i -> (ops |> List.item i) a b) = expected)
+            [ for i in 0 .. values.Length - 2 -> operators[(x / (pown opLength i)) % opLength] ])
+        |> Seq.exists (fun ops -> values |> Seq.reducei (fun a b i -> ops.Item i a b) = expected)
 
     [<Test>]
     let Part1 () =
