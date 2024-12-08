@@ -66,20 +66,16 @@ let takeUntil predicate (source: seq<_>) =
             condition <- predicate latest
     }
 
-let reducei f (source: 'a seq) =
-    if Seq.isEmpty source then
+let inline reducei ([<InlineIfLambda>] f) (source: 'a seq) =
+    use enumerator = source.GetEnumerator()
+    if not <| enumerator.MoveNext() then
         invalidArg "source" "The input sequence was empty."
-    else
-        let enumerator = source.GetEnumerator()
 
-        if not (enumerator.MoveNext()) then
-            invalidArg "source" "The input sequence was empty."
+    let mutable acc = enumerator.Current
+    let mutable index = 0
 
-        let mutable acc = enumerator.Current
-        let mutable index = -1
+    while enumerator.MoveNext() do
+        acc <- f acc enumerator.Current index
+        index <- index + 1
 
-        while enumerator.MoveNext() do
-            index <- index + 1
-            acc <- f acc enumerator.Current index
-
-        acc
+    acc
