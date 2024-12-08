@@ -1,6 +1,7 @@
 ﻿namespace AOC.FSharp.Common
 
 open System.Numerics
+open System.Runtime.CompilerServices
 
 [<Struct>]
 type rect<'u & #INumber<'u>> =
@@ -70,5 +71,10 @@ module Rect =
 
         (x && (point.y = rect.yMin || point.y = rect.yMax))
         || (y && (point.x = rect.xMin || point.x = rect.xMax))
+
+[<AutoOpen>]
+type RectExtensions =
+    [<Extension>]
+    static member Contains (rect: rect<_>, point: vector2<_>)  = Rect.contains point rect
 
 type rectInt = rect<int>

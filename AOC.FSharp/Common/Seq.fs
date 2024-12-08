@@ -68,6 +68,7 @@ let takeUntil predicate (source: seq<_>) =
 
 let inline reducei ([<InlineIfLambda>] f) (source: 'a seq) =
     use enumerator = source.GetEnumerator()
+
     if not <| enumerator.MoveNext() then
         invalidArg "source" "The input sequence was empty."
 
@@ -79,3 +80,16 @@ let inline reducei ([<InlineIfLambda>] f) (source: 'a seq) =
         index <- index + 1
 
     acc
+
+let inline combinations n (source: 'a seq) =
+    let rec combine acc n l =
+        match n, l with
+        | 0, _ -> [ List.rev acc ]
+        | _, [] -> []
+        | k, x :: xs -> combine (x :: acc) (k - 1) xs @ combine acc k xs
+
+    combine [] n (List.ofSeq source)
+
+let inline combinePairs (source: 'a seq) =
+    source |> combinations 2
+    |> Seq.map (fun l -> l[0], l[1])
