@@ -18,7 +18,7 @@ module Day10 =
     let heads = input.Values |> Seq.filter (fun (_, v) -> v = 0) |> Seq.toArray
 
     let rec pathFind (position, height) =
-        let search (position, height) =
+        let inline search (position, height) =
             int2.cardinalDirections
             |> Array.choose (fun v -> input |> Map.tryFind (v + position))
             |> Array.filter (snd >> (=) (height + 1))
