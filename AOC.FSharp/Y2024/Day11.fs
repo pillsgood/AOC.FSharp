@@ -9,7 +9,7 @@ open Pillsgood.AdventOfCode
 module Day11 =
     let input: int64 array = Input.fetch |> (String.split " " >> Array.map int64)
 
-    let (|IsSplit|_|) value =
+    let (|Split|_|) value =
         match (string value) with
         | s when s.Length % 2 = 0 -> s |> String.split2 |> (fun (l, r) -> Some(int64 l, int64 r))
         | _ -> None
@@ -21,7 +21,7 @@ module Day11 =
             let inline step x =
                 match x with
                 | 0L -> f 1L
-                | IsSplit(l, r) -> f l + f r
+                | Split(l, r) -> f l + f r
                 | x -> f (2024L * x)
             if i = 0 then 1L else (step value)
 
