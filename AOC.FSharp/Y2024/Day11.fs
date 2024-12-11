@@ -10,11 +10,9 @@ module Day11 =
     let input: int64 array = Input.fetch |> (String.split " " >> Array.map int64)
 
     let (|IsSplit|_|) value =
-        string value
-        |> fun s ->
-            match s.Length with
-            | l when l % 2 = 0 -> Some(int64 s[.. (l / 2) - 1], int64 s[l / 2 ..])
-            | _ -> None
+        match (string value) with
+        | s when s.Length % 2 = 0 -> Some(int64 s[.. (s.Length / 2) - 1], int64 s[s.Length / 2 ..])
+        | _ -> None
 
     let cache = ConcurrentDictionary<int64 * int, int64>()
 
