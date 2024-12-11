@@ -20,7 +20,7 @@
     <Compile Include="Common\line.fs"/>
     <Compile Include="Common\rect.fs"/>
     <Compile Include="Common\Regex.fs"/>
-    <Compile Include="Common\string.fs" />
+    <Compile Include="Common\String.fs"/>
     <Compile Include="Common\Seq.fs" />
     <Compile Include="Common\PSeq.fs" />
     <Compile Include="Common\Option.fs" />

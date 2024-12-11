@@ -11,7 +11,7 @@ module Day11 =
 
     let (|IsSplit|_|) value =
         match (string value) with
-        | s when s.Length % 2 = 0 -> Some(int64 s[.. (s.Length / 2) - 1], int64 s[s.Length / 2 ..])
+        | s when s.Length % 2 = 0 -> s |> String.split2 |> (fun (l, r) -> Some(int64 l, int64 r))
         | _ -> None
 
     let cache = ConcurrentDictionary<int64 * int, int64>()
