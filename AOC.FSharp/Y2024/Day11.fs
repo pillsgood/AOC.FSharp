@@ -21,15 +21,17 @@ module Day11 =
     let rec blink i value =
         let inline f x = cache.GetOrAdd((x, i), fun (x, i) -> blink (i - 1) x)
 
-        match value, i with
-        | _, 0 -> 1L
-        | 0L, _ -> f 1
-        | IsSplit(l, r), _ -> f l + f r
-        | x, _ -> f (2024L * x)
+        let inline convert x =
+            match x with
+            | 0L -> f 1L
+            | IsSplit(l, r) -> f l + f r
+            | x -> f (2024L * x)
+
+        if i = 0 then 1L else (convert value)
 
 
     [<Test>]
-    let Part1 () = input |> Array.sumBy (blink 25) |> Answer.submit
+    let Part1 () = input |> Array.Parallel.sumBy (blink 25) |> Answer.submit
 
     [<Test>]
     let Part2 () = input |> Array.Parallel.sumBy (blink 75) |> Answer.submit
