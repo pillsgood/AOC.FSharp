@@ -18,12 +18,12 @@ module Day11 =
         memoizeRec2
         <| fun f' i value ->
             let inline f x = f' (i - 1) x
-            let inline convert x =
+            let inline step x =
                 match x with
                 | 0L -> f 1L
                 | IsSplit(l, r) -> f l + f r
                 | x -> f (2024L * x)
-            if i = 0 then 1L else (convert value)
+            if i = 0 then 1L else (step value)
 
     [<Test>]
     let Part1 () = input |> Array.Parallel.sumBy (sim 25) |> Answer.submit

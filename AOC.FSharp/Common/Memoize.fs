@@ -5,7 +5,7 @@ let inline memoize f =
     let cache = System.Collections.Concurrent.ConcurrentDictionary()
     fun x -> cache.GetOrAdd(x, lazy f x).Value
 
-let inline memoize2 f = memoize (fun (x, y) -> f x y) |> fun (f') x y -> f' (x, y)
+let inline memoize2 f = memoize (fun (x, y) -> f x y) |> fun f' x y -> f' (x, y)
 
 let inline memoize3 f = memoize (fun (x, y, z) -> f x y z) |> fun f' x y z -> f' (x, y, z)
 
