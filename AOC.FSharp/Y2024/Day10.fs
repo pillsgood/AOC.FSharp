@@ -17,14 +17,16 @@ module Day10 =
 
     let heads = input.Values |> Seq.filter (fun (_, v) -> v = 0) |> Seq.toArray
 
-    let rec pathFind (position, height) =
-        let inline search (position, height) =
-            int2.cardinalDirections
-            |> Array.choose (fun v -> input |> Map.tryFind (v + position))
-            |> Array.filter (snd >> (=) (height + 1))
-            |> Array.collect pathFind
+    let pathFind =
+        memoizeRec
+        <| fun f' (position, height) ->
+            let inline search (position, height) =
+                int2.cardinalDirections
+                |> Array.choose (fun v -> input |> Map.tryFind (v + position))
+                |> Array.filter (snd >> (=) (height + 1))
+                |> Array.collect f'
 
-        (position, height) |> if height = 9 then Array.singleton else search
+            (position, height) |> if height = 9 then Array.singleton else search
 
     [<Test>]
     let Part1 () =
