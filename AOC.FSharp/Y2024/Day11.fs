@@ -1,6 +1,6 @@
 ﻿namespace AOC.FSharp.Y2024
 
-open System.Collections.Concurrent
+open AOC.FSharp.Common
 open Microsoft.FSharp.Core
 open NUnit.Framework
 open Pillsgood.AdventOfCode
@@ -14,22 +14,19 @@ module Day11 =
         | s when s.Length % 2 = 0 -> s |> String.split2 |> (fun (l, r) -> Some(int64 l, int64 r))
         | _ -> None
 
-    let cache = ConcurrentDictionary<int64 * int, int64>()
-
-    let rec blink i value =
-        let inline f x = cache.GetOrAdd((x, i), fun (x, i) -> blink (i - 1) x)
-
-        let inline convert x =
-            match x with
-            | 0L -> f 1L
-            | IsSplit(l, r) -> f l + f r
-            | x -> f (2024L * x)
-
-        if i = 0 then 1L else (convert value)
-
+    let sim =
+        memoizeRec2
+        <| fun f' i value ->
+            let inline f x = f' (i - 1) x
+            let inline convert x =
+                match x with
+                | 0L -> f 1L
+                | IsSplit(l, r) -> f l + f r
+                | x -> f (2024L * x)
+            if i = 0 then 1L else (convert value)
 
     [<Test>]
-    let Part1 () = input |> Array.Parallel.sumBy (blink 25) |> Answer.submit
+    let Part1 () = input |> Array.Parallel.sumBy (sim 25) |> Answer.submit
 
     [<Test>]
-    let Part2 () = input |> Array.Parallel.sumBy (blink 75) |> Answer.submit
+    let Part2 () = input |> Array.Parallel.sumBy (sim 75) |> Answer.submit

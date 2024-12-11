@@ -29,6 +29,7 @@
     <Compile Include="Common\FSUnit.fs" />
     <Compile Include="Common\DimensionExt.fs"/>
     <Compile Include="Common\FirstBuilder.fs"/>
+    <Compile Include="Common\Memoize.fs"/>
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Y2024\*.fs" />
     <Compile Include="Program.fs" />

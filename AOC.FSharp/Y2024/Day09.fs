@@ -22,7 +22,6 @@ module Day09 =
 
     let inline swap i (blocks: int Span byref) : int =
         let mutable slice = blocks.Slice(i)
-
         match slice.LastIndexOfAnyExcept(-1) with
         | -1 -> -1
         | idx ->
@@ -40,7 +39,6 @@ module Day09 =
             if blocks[i] <> -1 then checksum <- checksum + int64 (i * blocks[i])
 
         checksum |> Answer.submit
-
 
     [<Test>]
     let Part2 () =
