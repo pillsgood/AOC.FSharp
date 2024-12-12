@@ -27,7 +27,7 @@
     <Compile Include="Common\Math64.fs" />
     <Compile Include="Common\Map.fs" />
     <Compile Include="Common\FSUnit.fs" />
-    <Compile Include="Common\DimensionExt.fs"/>
+    <Compile Include="Common\2D.fs"/>
     <Compile Include="Common\FirstBuilder.fs"/>
     <Compile Include="Common\Memoize.fs"/>
     <Compile Include="Y2023\*.fs" />

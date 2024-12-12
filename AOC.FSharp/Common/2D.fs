@@ -1,6 +1,7 @@
 ﻿[<AutoOpen>]
 module DimensionExt
 
+open System.Collections.Generic
 open AOC.FSharp.Common
 
 type List =
@@ -20,3 +21,9 @@ type Seq =
         let height = Seq.length xs
         let width = Seq.head xs |> _.Length
         int2 (width, height)
+
+module Array =
+    let inline map2d<'a, 'b, 'c when 'b :> IEnumerable<'a>> (f: int -> int -> 'a -> 'c) (array: 'b array) =
+        array
+        |> Array.mapi (fun j items -> items |> Seq.mapi (fun i -> f i j) |> Array.ofSeq)
+        |> Array.concat
