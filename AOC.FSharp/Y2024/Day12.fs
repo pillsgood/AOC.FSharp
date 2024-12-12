@@ -1,6 +1,5 @@
 ﻿namespace AOC.FSharp.Y2024
 
-open System.Collections.Generic
 open AOC.FSharp.Common
 open Microsoft.FSharp.Core
 open NUnit.Framework
@@ -8,21 +7,15 @@ open Pillsgood.AdventOfCode
 
 [<AocFixture>]
 module Day12 =
-    // module Input =
-    //     let fetch =
-    //         """
-    //         RRRRIICCFF
-    //         RRRRIICCCF
-    //         VVRRRCCFFF
-    //         VVRCCCJFFF
-    //         VVVVCJJCFE
-    //         VVIVCCJJEE
-    //         VVIIICJJEE
-    //         MIIIIIJJEE
-    //         MIIISIJEEE
-    //         MMMISSJEEE
-    //         """
-    //         |> String.splitLines
+    module Input =
+        let fetch<'u> =
+            """
+            AAAA
+            BBCD
+            BBCC
+            EEEC
+            """
+            |> String.splitLines
 
     let tiles =
         Input.fetch<string array>
@@ -30,51 +23,44 @@ module Day12 =
         |> Array.map2d (fun i j c -> int2 (i, j), c)
 
     let map = tiles |> Array.map (fun t -> fst t, t) |> Map
-    let cache = HashSet()
 
-    [<Struct>]
-    type Region =
-        { Id: char
-          Area: int
-          Perimeter: int }
+    type Tile = int2 * char
+    let getNeighbors position = int2.cardinalDirections |> Array.map ((+) position)
 
-    let getRegion (position, regionId) : Region option =
-        let scope = HashSet()
+    let getRegion tile : (int2 * char) list =
+        let getNeighbors tile (visited: Set<_>) =
+            getNeighbors (fst tile)
+            |> Seq.choose map.TryFind
+            |> Seq.filter (snd >> (=) (snd tile))
+            |> Seq.filter (not << visited.Contains)
+            |> Seq.toList
 
-        let rec fill position (region: Region) =
-            scope.Add(position) |> ignore
-            cache.Add(position) |> ignore
+        let rec search (scope: Tile list) (visited: Tile Set) acc =
+            match scope with
+            | [] -> acc
+            | cur :: rem ->
+                let visited = visited |> Set.add cur
+                let scope = getNeighbors cur visited @ rem |> List.except visited
+                search scope visited (cur :: acc)
 
-            let neighbors =
-                int2.cardinalDirections
-                |> Array.map ((+) position)
-                |> Array.map (fun v -> v, map.TryFind v)
-
-            let inline addPerimeter r = { r with Perimeter = r.Perimeter + 1 }
-            let inline addArea position r = fill position { r with Area = r.Area + 1 }
-
-            (region, neighbors)
-            ||> Array.fold (fun acc (p, opt) ->
-                let inline step opt =
-                    match opt with
-                    | Some(v, c) -> if c = regionId then (addArea v) else addPerimeter
-                    | None -> addPerimeter
-
-                acc |> (if scope.Contains p then id else step opt))
-
-        let region =
-            { Id = regionId
-              Area = 1
-              Perimeter = 0 }
-
-        if cache.Contains(position) then None else Some(fill position region)
+        search [ tile ] Set.empty []
 
     [<Test>]
     let Part1 () =
-        tiles
-        |> Array.choose getRegion
-        |> Array.sumBy (fun region -> region.Area * region.Perimeter)
-        |> Answer.submit
+        let rec scanRegions tiles =
+            match Seq.tryHead tiles with
+            | Some(tile) ->
+                getRegion tile
+                |> fun region -> scanRegions (tiles |> List.except region) @ [ region ]
+            | _ -> []
+
+        let measure (region: Tile list) =
+            let perimeter =
+                region
+                |> List.sumBy (fun (p, rid) -> getNeighbors p |> Seq.count (Option.exists ((<>) rid)))
+            perimeter * (List.length region)
+
+        scanRegions (tiles |> List.ofArray) |> Seq.sumBy measure |> printfn "%A"
 
     [<Test>]
     let Part2 () = ()
