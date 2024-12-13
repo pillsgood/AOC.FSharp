@@ -90,6 +90,11 @@ let inline combinations n (source: 'a seq) =
 
     combine [] n (List.ofSeq source)
 
-let inline combinePairs (source: 'a seq) =
-    source |> combinations 2
-    |> Seq.map (fun l -> l[0], l[1])
+let inline combinePairs (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1])
+
+let inline tap f (source: 'a seq) =
+    seq {
+        for x in source do
+            f x
+            yield x
+    }

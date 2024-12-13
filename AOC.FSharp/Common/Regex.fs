@@ -7,7 +7,8 @@ open System.Text.RegularExpressions
 type private Rgx = Regex
 
 type Regex =
-    static member matches ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) input = Regex.Matches(input, pattern)
+    static member matches ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern) input =
+        Regex.Matches(input, pattern) |> Seq.toArray
 
     static member replace ([<StringSyntax(StringSyntaxAttribute.Regex)>] pattern: string) (replacement: string) (input: string) =
         Regex.Replace(input, pattern, replacement)
