@@ -37,8 +37,9 @@ module Day13 =
 
     let findMinCost (machine: Machine) =
         let (<*>) (v1: long2) (v2: long2) = (v1.x * v2.y - v1.y * v2.x)
-        let a = +(machine.target <*> machine.coeffB) / (machine.coeffA <*> machine.coeffB)
-        let b = -(machine.target <*> machine.coeffA) / (machine.coeffA <*> machine.coeffB)
+        let d = (machine.coeffA <*> machine.coeffB)
+        let a = (machine.target <*> machine.coeffB) / +d
+        let b = (machine.target <*> machine.coeffA) / -d
 
         if (machine.coeffA * a) + (machine.coeffB * b) = machine.target then
             Some(3L * a + b)
