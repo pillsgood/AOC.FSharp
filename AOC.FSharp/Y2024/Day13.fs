@@ -41,10 +41,9 @@ module Day13 =
         let a = (machine.target <*> machine.coeffB) / +d
         let b = (machine.target <*> machine.coeffA) / -d
 
-        if (machine.coeffA * a) + (machine.coeffB * b) = machine.target then
-            Some(3L * a + b)
-        else
-            None
+        match (machine.coeffA * a) + (machine.coeffB * b) = machine.target with
+        | true -> Some(3L * a + b)
+        | _ -> None
 
     [<Test>]
     let Part1 () = input |> Seq.choose findMinCost |> Seq.sum |> Answer.submit
