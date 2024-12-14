@@ -33,4 +33,4 @@ module lineExt =
         let pbL: float = length pb
         let abL: float = length l
         let diff: float = abL - (apL + pbL)
-        abs diff <= epsilon
+        abs diff <= Math.epsilon
