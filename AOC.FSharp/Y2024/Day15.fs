@@ -31,13 +31,6 @@ module Day15 =
 
     let createEntities factory input = input |> Array.map2d (fun i j c -> int2 (i, j), c) |> Array.choose factory
 
-    let update f stack entities =
-        stack
-        |> List.map (fun e -> entities |> Array.findIndex ((=) e))
-        |> List.iter (fun id ->
-            let e = &entities[id]
-            e <- f e)
-
     let getMoveStack (entity: Entity) (move: int2) (entities: Entity array) : Entity list =
         let rec scan (visited: Set<Entity>) (current: Entity) =
             current
@@ -54,6 +47,29 @@ module Day15 =
         | Ok resultSet -> resultSet |> Set.toList
         | Error _ -> []
 
+    let simulate (entities: Entity array) =
+        let mutable entities = entities
+
+        let updateEntity f stack entities =
+            stack
+            |> List.map (fun e -> entities |> Array.findIndex ((=) e))
+            |> List.iter (fun id ->
+                let e = &entities[id]
+                e <- f e)
+
+        instructions
+        |> Array.iter (fun move ->
+            let bot = entities |> Array.find _.Type.IsBot
+            let stack = entities |> getMoveStack bot move
+            (stack, entities) ||> updateEntity (fun e -> { e with Rect = e.Rect.Move move }))
+
+        entities
+
+    let aggregate entities =
+        entities
+        |> Array.filter _.Type.IsBox
+        |> Array.sumBy (_.Rect.min >> (fun v -> v.x + 100 * v.y))
+
     [<Test>]
     let Part1 () =
         let mutable entities =
@@ -65,16 +81,7 @@ module Day15 =
                 | '@' -> Some { Type = Bot; Rect = rectInt (position, int2.one) }
                 | _ -> None)
 
-        instructions
-        |> Array.iter (fun move ->
-            let bot = entities |> Array.find _.Type.IsBot
-            let stack = entities |> getMoveStack bot move
-            (stack, entities) ||> update (fun e -> { e with Rect = e.Rect.Move move }))
-
-        entities
-        |> Array.filter _.Type.IsBox
-        |> Array.sumBy (_.Rect.min >> (fun v -> v.x + 100 * v.y))
-        |> Answer.submit
+        simulate entities |> aggregate |> Answer.submit
 
     [<Test>]
     let Part2 () =
@@ -98,13 +105,4 @@ module Day15 =
                 | '@' -> Some { Type = Bot; Rect = rectInt (position, int2.one) }
                 | _ -> None)
 
-        instructions
-        |> Array.iter (fun move ->
-            let bot = entities |> Array.find _.Type.IsBot
-            let stack = entities |> getMoveStack bot move
-            (stack, entities) ||> update (fun e -> { e with Rect = e.Rect.Move move }))
-
-        entities
-        |> Array.filter _.Type.IsBox
-        |> Array.sumBy (_.Rect.min >> (fun v -> v.x + 100 * v.y))
-        |> Answer.submit
+        simulate entities |> aggregate |> Answer.submit
