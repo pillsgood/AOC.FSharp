@@ -10,6 +10,7 @@ open Pillsgood.AdventOfCode
 module Day03 =
 
     open Rect
+    type rectInt = rect<int>
     let input: string[] = Input.fetch
 
     let symbols: (int2 * char) list =
@@ -23,7 +24,8 @@ module Day03 =
               match input[y] with
               | Matches (Regex(@"\d+")) parts ->
                   parts
-                  |> List.map (fun part -> (rectInt (int2 (part.Index, y), vector2 (part.Length - 1, 0)), int part.Value))
+                  |> List.map (fun part ->
+                      (rectInt (int2 (part.Index, y), vector2 (part.Length - 1, 0)), int part.Value))
               | _ -> [] ]
         |> List.concat
 

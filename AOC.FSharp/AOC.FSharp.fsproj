@@ -18,7 +18,8 @@
     <Compile Include="Common\vector2.fs"/>
     <Compile Include="Common\vector.fs"/>
     <Compile Include="Common\line.fs"/>
-    <Compile Include="Common\rect.fs"/>
+    <Compile Include="Common\Rect.fs"/>
+    <Compile Include="Common\RectInt.fs"/>
     <Compile Include="Common\Regex.fs"/>
     <Compile Include="Common\String.fs"/>
     <Compile Include="Common\Seq.fs" />
@@ -30,6 +31,7 @@
     <Compile Include="Common\2D.fs"/>
     <Compile Include="Common\FirstBuilder.fs"/>
     <Compile Include="Common\Memoize.fs"/>
+    <Compile Include="Common\Result.fs"/>
     <Compile Include="Y2023\*.fs" />
     <Compile Include="Y2024\*.fs" />
     <Compile Include="Program.fs" />

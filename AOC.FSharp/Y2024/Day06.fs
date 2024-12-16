@@ -9,6 +9,7 @@ open Pillsgood.AdventOfCode
 
 [<AocFixture>]
 module Day06 =
+    type rectInt = rect<int>
     let input: string array = Input.fetch
     let bounds = rectInt (int2.zero, Array.dimensions input)
 

@@ -56,8 +56,8 @@ module Rect =
         x && y
 
     let inline intersects (left: rect<_>) (right: rect<_>) =
-        let x = left.xMin <= right.xMax && left.xMax >= right.xMin
-        let y = left.yMin <= right.yMax && left.yMax >= right.yMin
+        let x = left.xMin < right.xMax && left.xMax >= right.xMin
+        let y = left.yMin < right.yMax && left.yMax >= right.yMin
         x && y
 
     let inline grow (size: vector2<'u>) (r: rect<'u>) =
@@ -72,9 +72,15 @@ module Rect =
         (x && (point.y = rect.yMin || point.y = rect.yMax))
         || (y && (point.x = rect.xMin || point.x = rect.xMax))
 
+    let inline move (v: vector2<_>) (rect: rect<_>) = new rect<_> (rect.min + v, rect.size)
+
 [<AutoOpen>]
 type RectExtensions =
     [<Extension>]
-    static member Contains (rect: rect<_>, point: vector2<_>)  = Rect.contains point rect
+    static member Contains(rect: rect<_>, point: vector2<_>) = Rect.contains point rect
 
-type rectInt = rect<int>
+    [<Extension>]
+    static member Move(rect: rect<_>, v: vector2<_>) = Rect.move v rect
+
+    [<Extension>]
+    static member Intersects(rect: rect<_>, other: rect<_>) = Rect.intersects rect other
