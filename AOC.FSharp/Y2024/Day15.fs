@@ -39,9 +39,9 @@ module Day15 =
             e <- f e)
 
     let getMoveStack (entity: Entity) (move: int2) (entities: Entity array) : Entity list =
-        let rec scan (visited: Set<Entity>) (current: Entity) : Result<Set<Entity>, Set<Entity>> =
-            current.Type.IsWall
-            |> Result.guard visited
+        let rec scan (visited: Set<Entity>) (current: Entity) =
+            current
+            |> Result.validate _.Type.IsWall
             |> Result.bind (fun _ ->
                 let updatedVisited = visited.Add(current)
                 let collision = current.Rect.Move(move)

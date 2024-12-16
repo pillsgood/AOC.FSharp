@@ -1,4 +1,4 @@
 ﻿namespace AOC.FSharp.Common
 
 module Result =
-    let guard value condition = if condition then Error value else Ok()
+    let validate predicate value = if predicate value then Error() else Ok()
