@@ -41,7 +41,6 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Collections.ParallelSeq" Version="1.2.0" />
     <PackageReference Include="FSharp.Text.RegexProvider" Version="2.1.0" />
-    <PackageReference Include="FSharpx.Collections" Version="3.1.0" />
     <PackageReference Include="FsUnit" Version="6.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="NUnit" Version="4.2.2" />
