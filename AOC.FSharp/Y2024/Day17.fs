@@ -16,15 +16,31 @@ module Day17 =
         | Const of uint64
         | Reg of Register
 
-    type Opcode =
-        | adv = 0
-        | bxl = 1
-        | bst = 2
-        | jnz = 3
-        | bxc = 4
-        | out = 5
-        | bdv = 6
-        | cdv = 7
+    [<RequireQualifiedAccess>]
+    type Op =
+        | adv of Operand
+        | bxl of Operand
+        | bst of Operand
+        | jnz of Operand
+        | bxc
+        | out of Operand
+        | bdv of Operand
+        | cdv of Operand
+
+    let createOp opcode operand =
+        let literal x = Const(uint64 x)
+        let combo (x: int) = if x >= 0 && x <= 3 then Const(uint64 x) else Reg(enum<Register> (x - 4))
+
+        match opcode with
+        | 0 -> Op.adv (combo operand)
+        | 1 -> Op.bxl (literal operand)
+        | 2 -> Op.bst (combo operand)
+        | 3 -> Op.jnz (literal operand)
+        | 4 -> Op.bxc
+        | 5 -> Op.out (combo operand)
+        | 6 -> Op.bdv (combo operand)
+        | 7 -> Op.cdv (combo operand)
+        | _ -> failwith "Invalid opcode"
 
     type Buffer =
         struct
@@ -42,73 +58,49 @@ module Day17 =
                 | Const c -> c
                 | Reg r -> this[r]
 
-    let execute (opcode: Opcode, operand: Operand) (ptr: int byref) (buf: Buffer byref) =
-        let mutable output = &buf.output
+    let execute (instruction: Op) (ptr: int byref) (buf: Buffer byref) =
         let pow (x: uint64) : uint64 = pown 2uL (int x)
 
-        match opcode with
-        | Opcode.adv ->
+        match instruction with
+        | Op.adv operand ->
             let mutable reg = &buf[Register.A]
             reg <- reg / (pow buf[operand])
             ptr <- ptr + 1
-        | Opcode.bxl ->
+        | Op.bxl operand ->
             let mutable reg = &buf[Register.B]
             reg <- reg ^^^ buf[operand]
             ptr <- ptr + 1
-        | Opcode.bst ->
+        | Op.bst operand ->
             let mutable reg = &buf[Register.B]
             reg <- buf[operand] % 8uL
             ptr <- ptr + 1
-        | Opcode.jnz -> if buf[Register.A] <> 0uL then ptr <- int (buf[operand]) / 2 else ptr <- ptr + 1
-        | Opcode.bxc ->
+        | Op.jnz operand -> if buf[Register.A] = 0uL then ptr <- ptr + 1 else ptr <- int (buf[operand]) / 2
+        | Op.bxc ->
             let mutable reg = &buf[Register.B]
             reg <- reg ^^^ buf[Register.C]
             ptr <- ptr + 1
-        | Opcode.out ->
+        | Op.out operand ->
+            let mutable output = &buf.output
             output <- int (buf[operand] % 8uL) :: output
             ptr <- ptr + 1
-        | Opcode.bdv ->
+        | Op.bdv operand ->
             let mutable reg = &buf[Register.B]
             reg <- buf[Register.A] / (pow buf[operand])
             ptr <- ptr + 1
-        | Opcode.cdv ->
+        | Op.cdv operand ->
             let mutable reg = &buf[Register.C]
             reg <- buf[Register.A] / (pow buf[operand])
             ptr <- ptr + 1
-        | _ -> ()
 
-    let run (program: (Opcode * Operand) list) (computer: Buffer) =
-        let mutable computer = computer
+    let run (program: Op list) (buffer: Buffer) =
+        let mutable buffer = buffer
         let mutable ptr = 0
 
         while ptr < program.Length do
             let instruction = program[ptr]
-            execute instruction &ptr &computer
+            execute instruction &ptr &buffer
 
-        computer.output |> List.rev
-
-    let parseInstruction opcode operand =
-        let opcode = enum<Opcode> opcode
-        let literal x = Operand.Const(uint64 x)
-
-        let combo (x: int) =
-            if x >= 0 && x <= 3 then
-                Operand.Const(uint64 x)
-            else
-                Operand.Reg(enum<Register> (x - 4))
-
-        opcode,
-        operand
-        |> match opcode with
-           | Opcode.adv
-           | Opcode.bst
-           | Opcode.out
-           | Opcode.bdv
-           | Opcode.cdv -> combo
-           | Opcode.bxl
-           | Opcode.jnz
-           | Opcode.bxc -> literal
-           | _ -> failwithf $"Unknown opcode: %A{opcode}"
+        buffer.output |> List.rev
 
     let registers, input =
         let pattern =
@@ -126,7 +118,7 @@ module Day17 =
         input
         |> List.chunkBySize 2
         |> List.choose (function
-            | [ opcode; operand ] -> Some(parseInstruction opcode operand)
+            | [ opcode; operand ] -> Some(createOp opcode operand)
             | _ -> None)
 
     [<Test>]
