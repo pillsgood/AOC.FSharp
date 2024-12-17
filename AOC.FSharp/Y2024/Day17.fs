@@ -12,6 +12,10 @@ module Day17 =
         | B = 1
         | C = 2
 
+    type Operand =
+        | Const of uint64
+        | Reg of Register
+
     type Opcode =
         | adv = 0
         | bxl = 1
@@ -22,20 +26,11 @@ module Day17 =
         | bdv = 6
         | cdv = 7
 
-    type Operand =
-        | Const of uint64
-        | Reg of Register
-
-    type Computer =
+    type Buffer =
         struct
-            val mutable ptr: int
             val mutable output: int list
             val mutable registers: uint64[]
-
-            new(registers: uint64[]) =
-                { registers = registers
-                  ptr = 0
-                  output = [] }
+            new(registers: uint64[]) = { registers = registers; output = [] }
         end
 
         member this.Item
@@ -47,48 +42,48 @@ module Day17 =
                 | Const c -> c
                 | Reg r -> this[r]
 
-    let execute (opcode: Opcode, operand: Operand) (comp: Computer byref) =
-        let mutable ptr = &comp.ptr
-        let mutable output = &comp.output
+    let execute (opcode: Opcode, operand: Operand) (ptr: int byref) (buf: Buffer byref) =
+        let mutable output = &buf.output
         let pow (x: uint64) : uint64 = pown 2uL (int x)
 
         match opcode with
         | Opcode.adv ->
-            let mutable reg = &comp[Register.A]
-            reg <- reg / (pow comp[operand])
-            ptr <- ptr + 2
+            let mutable reg = &buf[Register.A]
+            reg <- reg / (pow buf[operand])
+            ptr <- ptr + 1
         | Opcode.bxl ->
-            let mutable reg = &comp[Register.B]
-            reg <- reg ^^^ comp[operand]
-            ptr <- ptr + 2
+            let mutable reg = &buf[Register.B]
+            reg <- reg ^^^ buf[operand]
+            ptr <- ptr + 1
         | Opcode.bst ->
-            let mutable reg = &comp[Register.B]
-            reg <- comp[operand] % 8uL
-            ptr <- ptr + 2
-        | Opcode.jnz -> if comp[Register.A] <> 0uL then ptr <- int (comp[operand]) else ptr <- ptr + 2
+            let mutable reg = &buf[Register.B]
+            reg <- buf[operand] % 8uL
+            ptr <- ptr + 1
+        | Opcode.jnz -> if buf[Register.A] <> 0uL then ptr <- int (buf[operand]) / 2 else ptr <- ptr + 1
         | Opcode.bxc ->
-            let mutable reg = &comp[Register.B]
-            reg <- reg ^^^ comp[Register.C]
-            ptr <- ptr + 2
+            let mutable reg = &buf[Register.B]
+            reg <- reg ^^^ buf[Register.C]
+            ptr <- ptr + 1
         | Opcode.out ->
-            output <- int (comp[operand] % 8uL) :: output
-            ptr <- ptr + 2
+            output <- int (buf[operand] % 8uL) :: output
+            ptr <- ptr + 1
         | Opcode.bdv ->
-            let mutable reg = &comp[Register.B]
-            reg <- comp[Register.A] / (pow comp[operand])
-            ptr <- ptr + 2
+            let mutable reg = &buf[Register.B]
+            reg <- buf[Register.A] / (pow buf[operand])
+            ptr <- ptr + 1
         | Opcode.cdv ->
-            let mutable reg = &comp[Register.C]
-            reg <- comp[Register.A] / (pow comp[operand])
-            ptr <- ptr + 2
+            let mutable reg = &buf[Register.C]
+            reg <- buf[Register.A] / (pow buf[operand])
+            ptr <- ptr + 1
         | _ -> ()
 
-    let run (program: (Opcode * Operand) list) (computer: Computer) =
+    let run (program: (Opcode * Operand) list) (computer: Buffer) =
         let mutable computer = computer
+        let mutable ptr = 0
 
-        while (computer.ptr / 2) < program.Length do
-            let instruction = program[computer.ptr / 2]
-            execute instruction &computer
+        while ptr < program.Length do
+            let instruction = program[ptr]
+            execute instruction &ptr &computer
 
         computer.output |> List.rev
 
@@ -105,17 +100,17 @@ module Day17 =
         opcode,
         operand
         |> match opcode with
-           | Opcode.adv -> combo
-           | Opcode.bxl -> literal
-           | Opcode.bst -> combo
-           | Opcode.jnz -> literal
-           | Opcode.bxc -> literal
-           | Opcode.out -> combo
-           | Opcode.bdv -> combo
+           | Opcode.adv
+           | Opcode.bst
+           | Opcode.out
+           | Opcode.bdv
            | Opcode.cdv -> combo
+           | Opcode.bxl
+           | Opcode.jnz
+           | Opcode.bxc -> literal
            | _ -> failwithf $"Unknown opcode: %A{opcode}"
 
-    let computer, input =
+    let registers, input =
         let pattern =
             Regex(
                 @"Register A: (\d+)\s*Register B: (\d+)\s*Register C: (\d+)\s*Program: ((?:\d+,?)+)",
@@ -124,7 +119,7 @@ module Day17 =
 
         match Input.fetch<string> with
         | MatchValue pattern [ a; b; c; p ] ->
-            Computer([| uint64 a; uint64 b; uint64 c |]), p |> String.split "," |> Array.map int |> List.ofArray
+            [| uint64 a; uint64 b; uint64 c |], p |> String.split "," |> Array.map int |> List.ofArray
         | _ -> failwith "Invalid input format"
 
     let program =
@@ -136,11 +131,12 @@ module Day17 =
 
     [<Test>]
     let Part1 () =
-        computer |> run program |> List.map string |> String.concat "," |> Answer.submit
+        let buffer = Buffer(registers)
+        buffer |> run program |> List.map string |> String.concat "," |> Answer.submit
 
     [<Test>]
     let Part2 () =
-        let run a = Computer([| a; 0uL; 0uL |]) |> run program
+        let run a = Buffer([| a; 0uL; 0uL |]) |> run program
 
         let decompile (program: int list) =
             let rec search len current =
