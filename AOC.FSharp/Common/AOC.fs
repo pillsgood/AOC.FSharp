@@ -7,7 +7,7 @@ open Splat
 module Answer =
     let submit (answer: 'a) =
         let svc = Locator.Current.GetRequiredService<IAnswerAssertion>()
-        svc.Submit answer
+        svc.Submit(string answer)
 
 module Input =
     let fetch<'T> =
