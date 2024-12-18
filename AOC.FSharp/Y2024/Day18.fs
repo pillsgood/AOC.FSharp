@@ -69,15 +69,20 @@ module Day18 =
         let start, goal = bounds.min, bounds.max
         let run i = input |> Array.take i |> Set |> search start goal
 
-        let rec findIteration count =
-            if count < input.Length then
-                match run count with
-                | None -> Some(count - 1)
-                | _ -> findIteration (count + 1)
-            else
-                None
+        let findIteration () =
+            let rec binarySearch low high =
+                if low > high then
+                    Some(low - 1)
+                else
+                    let mid = low + (high - low) / 2
 
-        findIteration 1024
+                    match run mid with
+                    | None -> binarySearch low (mid - 1)
+                    | _ -> binarySearch (mid + 1) high
+
+            binarySearch 1024 input.Length
+
+        findIteration ()
         |> Option.map (fun i -> input[i] |> fun v -> $"{v.x},{v.y}")
         |> Option.get
         |> Answer.submit
