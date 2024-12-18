@@ -15,8 +15,6 @@ module Day16 =
         | Obstacle
         | Path
 
-    type Node = { visited: bool; cost: int }
-
     let map, bounds =
         let input = Input.fetch<string array>
 
@@ -62,7 +60,7 @@ module Day16 =
 
     let search (start: int2) (goal: int2) =
 
-        let graph = Array3D.create bounds.x bounds.y 4 { visited = false; cost = Int32.MaxValue }
+        let graph = Array3D.create bounds.x bounds.y 4 {| visited = false; cost = Int32.MaxValue |}
         let queue = PriorityQueue()
 
         let inline indexOf v = Array.IndexOf(int2.cardinalDirections, v)
@@ -71,11 +69,11 @@ module Day16 =
 
         let inline setVisit (pos: int2, dir: int2) =
             let mutable n = &graph[pos.x, pos.y, indexOf dir]
-            n <- { n with visited = true }
+            n <- {| n with visited = true |}
 
         let inline setCost cost (pos: int2, dir: int2) =
             let mutable n = &graph[pos.x, pos.y, indexOf dir]
-            n <- { n with cost = cost }
+            n <- {| n with cost = cost |}
 
         let rec scan () =
             if queue.Count = 0 then
@@ -102,9 +100,9 @@ module Day16 =
         queue.Enqueue((start, int2.right), 0)
         scan ()
 
-    let backtrack (graph: Node array3d) points =
+    let backtrack (graph: int array3d) points =
         let inline indexOf v = Array.IndexOf(int2.cardinalDirections, v)
-        let inline findCost (pos: int2, dir: int2) = graph[pos.x, pos.y, indexOf dir].cost
+        let inline findCost (pos: int2, dir: int2) = graph[pos.x, pos.y, indexOf dir]
 
         let rec scan visited rem =
             match rem with
@@ -128,7 +126,7 @@ module Day16 =
 
         int2.cardinalDirections
         |> Seq.map (fun dir -> goal, dir)
-        |> backtrack graph
+        |> backtrack (graph |> Array3D.map _.cost)
         |> Set.map fst
         |> Set.count
         |> Answer.submit
