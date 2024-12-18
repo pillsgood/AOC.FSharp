@@ -8,7 +8,7 @@ let addKey keySelector = Seq.map (fun x -> keySelector x, x) >> Map.ofSeq
 
 let intersect (left: 'a seq) (right: 'a seq) : 'a seq = left.Intersect(right)
 
-let minMap (selector: 'a -> #IComparable) (source: 'a seq) = source.Min(selector)
+let mapMin (selector: 'a -> #IComparable) (source: 'a seq) = source.Min(selector)
 
 let inline count predicate source = source |> Seq.filter predicate |> Seq.length
 

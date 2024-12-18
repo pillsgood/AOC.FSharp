@@ -6,8 +6,6 @@ open Microsoft.FSharp.Core
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 
-
-
 [<AocFixture>]
 module Day05 =
     type Range = { Start: int64; End: int64 }
@@ -25,7 +23,9 @@ module Day05 =
         let input = input[1..] |> String.concat "\n"
 
         let pattern =
-            Regex(@"(?<source>\w+)-to-(?<destination>\w+) map\:\n(?:(?<dstRange>\d+) (?<srcRange>\d+) (?<length>\d+)\n?)+")
+            Regex(
+                @"(?<source>\w+)-to-(?<destination>\w+) map\:\n(?:(?<dstRange>\d+) (?<srcRange>\d+) (?<length>\d+)\n?)+"
+            )
 
         match input with
         | Matches pattern matches ->
@@ -67,7 +67,7 @@ module Day05 =
 
             | None -> seed
 
-        seeds |> Seq.minMap (traverse start) |> Answer.submit
+        seeds |> Seq.mapMin (traverse start) |> Answer.submit
 
     [<Test>]
     let Part2 () =
@@ -126,4 +126,4 @@ module Day05 =
                     | _ -> None)
             | _ -> []
 
-        ranges |> Seq.collect (traverse start) |> Seq.minMap _.Start |> Answer.submit
+        ranges |> Seq.collect (traverse start) |> Seq.mapMin _.Start |> Answer.submit
