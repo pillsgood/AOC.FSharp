@@ -36,23 +36,21 @@ module Day18 =
             |> Seq.filter (fun v -> not (map.Contains v) && bounds.Contains v)
 
         let rec scan () =
-            if queue.Count = 0 then
-                findCost goal
-            else
-                match queue.Dequeue() with
-                | node when visited node -> scan ()
-                | node ->
-                    setVisited node
+            match queue.TryDequeue() with
+            | false, _, _ -> findCost goal
+            | true, node, _ when visited node -> scan ()
+            | true, node, _ ->
+                setVisited node
 
-                    adjacent node
-                    |> Seq.filter (fun n -> not (visited n))
-                    |> Seq.choose (fun n -> findCost node |> Option.map (fun cost -> (n, cost + 1)))
-                    |> Seq.filter (fun (n, cost) -> findCost n |> Option.forall (fun previous -> cost <= previous))
-                    |> Seq.iter (fun (n, cost) ->
-                        n |> setCost cost
-                        queue.Enqueue(n, cost))
+                adjacent node
+                |> Seq.filter (fun n -> not (visited n))
+                |> Seq.choose (fun n -> findCost node |> Option.map (fun cost -> (n, cost + 1)))
+                |> Seq.filter (fun (n, cost) -> findCost n |> Option.forall (fun previous -> cost <= previous))
+                |> Seq.iter (fun (n, cost) ->
+                    n |> setCost cost
+                    queue.Enqueue(n, cost))
 
-                    scan ()
+                scan ()
 
         setCost 0 start
         queue.Enqueue(start, 0)
