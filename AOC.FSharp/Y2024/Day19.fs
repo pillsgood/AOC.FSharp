@@ -14,18 +14,17 @@ module Day19 =
         |> (fun l ->
             (l[0] |> String.split ",") |> Array.sortByDescending (fun s -> s.Length, s), (l[1] |> String.splitLines))
 
-    let unitPatterns =
+    let unitPattern =
         patterns
         |> Array.indexed
         |> Array.filter (fun (i, p) ->
             p.Length = 1
             || not (Regex.IsMatch(p, (patterns[(i + 1) ..] |> String.concat "|" |> (fun s -> $"^({s})+$")))))
         |> Array.map snd
+        |> (String.concat "|" >> (fun s -> Regex($"^({s})+$")))
 
     [<Test>]
-    let Part1 () =
-        let pattern = unitPatterns |> (String.concat "|" >> (fun s -> Regex($"^({s})+$")))
-        designs |> Seq.count pattern.IsMatch |> Answer.submit
+    let Part1 () = designs |> Seq.count unitPattern.IsMatch |> Answer.submit
 
     [<Test>]
     let Part2 () =
@@ -40,8 +39,7 @@ module Day19 =
                     let remaining = case[p.Length ..]
                     if remaining.Length = 0 then 1L else f' remaining))
 
-        unitPatterns
-        |> (String.concat "|" >> (fun s -> Regex($"^({s})+$")))
-        |> fun pattern -> designs |> Array.filter pattern.IsMatch
+        designs
+        |> Array.filter unitPattern.IsMatch
         |> Array.Parallel.sumBy countAllCombinations
         |> Answer.submit
