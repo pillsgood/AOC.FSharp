@@ -7,18 +7,6 @@ open Pillsgood.AdventOfCode
 
 [<AocFixture>]
 module Day20 =
-    [<Struct>]
-    type Tile =
-        | Start of pos: int2
-        | Goal of pos: int2
-        | Track of pos: int2
-
-        member this.position =
-            match this with
-            | Start p -> p
-            | Goal p -> p
-            | Track p -> p
-
     let map =
         Input.fetch<string array>
         |> Array.rev
@@ -26,18 +14,19 @@ module Day20 =
             int2 (i, j)
             |> fun p ->
                 match c with
-                | 'S' -> Some(p, Start p)
-                | 'E' -> Some(p, Goal p)
-                | '.' -> Some(p, Track p)
+                | 'S' -> Some(p, (p, c))
+                | 'E' -> Some(p, (p, c))
+                | '.' -> Some(p, (p, c))
                 | _ -> None)
         |> Map.ofArray
 
-    let adjacent (tile: Tile) =
-        int2.cardinalDirections
-        |> Seq.choose (fun p -> map |> Map.tryFind (tile.position + p))
-
     let path =
-        let start = map |> Map.findValue _.IsStart
+        let adjacent (tile: int2) =
+            int2.cardinalDirections
+            |> Seq.choose (fun p -> map |> Map.tryFind (tile + p))
+            |> Seq.map fst
+
+        let start = map |> Map.findKey (fun _ (_, v) -> v = 'S')
 
         (Some start, adjacent start |> Seq.tryHead)
         |> Array.unfold (fun (current, next) ->
@@ -49,33 +38,44 @@ module Day20 =
                     let nextAdjacent = adjacent next |> Seq.filter (fun t -> not (t = current))
                     Some(current, (Some next, nextAdjacent |> Seq.tryHead))
                 | None -> Some(current, (None, None)))
+        |> Array.indexed
 
-    let costs = path |> Array.indexed |> Array.map (fun (i, t) -> t.position, i) |> Map.ofArray
+    let lookup = path |> Array.map (fun (i, v) -> v, i) |> Map.ofArray
 
     [<Test>]
     let Part1 () =
-        let findShortcut tile cost =
+        let findShortcut pos time =
             int2.cardinalDirections
-            |> Seq.map (fun v -> costs |> Map.tryFind (v + tile), costs |> Map.tryFind ((v * 2) + tile))
+            |> Seq.map (fun v -> lookup |> Map.tryFind (v + pos), lookup |> Map.tryFind ((v * 2) + pos))
             |> Seq.choose (fun (a, b) ->
                 match a, b with
-                | None, Some c when c > cost -> Some((c - cost) - 2)
+                | None, Some t when t > time -> Some((t - time) - 2)
                 | _ -> None)
 
         path
-        |> Seq.collect (fun t -> costs[t.position] |> findShortcut t.position)
+        |> Seq.collect (fun (t, pos) -> findShortcut pos t)
         |> Seq.count (fun save -> save >= 100)
         |> Answer.submit
 
+    let manhattanRadius distance =
+        [ for x in -distance .. distance do
+              let r = distance - abs x
+              for y in -r .. r -> int2 (x, y) ]
+
     [<Test>]
     let Part2 () =
+        let radius = manhattanRadius 20
+
         let countShortcut f (tile: int2, time: int) =
-            path[(time + 100) ..]
-            |> Array.sumBy (fun v ->
-                let d = Vector.manhattan (v.position - tile)
-                if d <= 20 && f ((costs[v.position] - time) - d) then 1 else 0)
+            radius
+            |> Seq.choose (fun v ->
+                v + tile
+                |> fun v ->
+                    match lookup.TryFind v with
+                    | Some c -> Some(c, Vector.manhattan (v - tile))
+                    | _ -> None)
+            |> Seq.count (fun (t, d) -> f ((t - time) - d))
 
         path
-        |> Array.indexed
-        |> Array.Parallel.sumBy (fun (time, t) -> (t.position, time) |> countShortcut (fun save -> save >= 100))
+        |> Array.Parallel.sumBy (fun (t, pos) -> (pos, t) |> countShortcut (fun save -> save >= 100))
         |> Answer.submit
