@@ -64,16 +64,14 @@ module Day20 =
 
     [<Test>]
     let Part2 () =
-        let radius = manhattanRadius 20
+        let radiusOf = manhattanRadius 20 |> fun r -> fun start -> r |> Seq.map (fun v -> v + start)
 
         let countShortcut f (tile: int2, time: int) =
-            radius
+            radiusOf tile
             |> Seq.choose (fun v ->
-                v + tile
-                |> fun v ->
-                    match lookup.TryFind v with
-                    | Some c -> Some(c, Vector.manhattan (v - tile))
-                    | _ -> None)
+                match lookup.TryFind v with
+                | Some c -> Some(c, Vector.manhattan (v - tile))
+                | _ -> None)
             |> Seq.count (fun (t, d) -> f ((t - time) - d))
 
         path
