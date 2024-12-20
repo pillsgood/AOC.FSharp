@@ -57,16 +57,16 @@ module Day20 =
         |> Seq.count (fun save -> save >= 100)
         |> Answer.submit
 
-    let manhattanRadius distance =
-        [ for x in -distance .. distance do
-              let r = distance - abs x
-              for y in -r .. r -> int2 (x, y) ]
-
     [<Test>]
     let Part2 () =
+        let inline manhattanRadius distance =
+            [ for x in -distance .. distance do
+                  let r = distance - abs x
+                  for y in -r .. r -> int2 (x, y) ]
+
         let radiusOf = manhattanRadius 20 |> fun r -> fun start -> r |> Seq.map (fun v -> v + start)
 
-        let countShortcut f (tile: int2, time: int) =
+        let inline countShortcut f (tile: int2, time: int) =
             radiusOf tile
             |> Seq.choose (fun v ->
                 match lookup.TryFind v with
@@ -75,5 +75,6 @@ module Day20 =
             |> Seq.count (fun (t, d) -> f ((t - time) - d))
 
         path
-        |> Array.Parallel.sumBy (fun (t, pos) -> (pos, t) |> countShortcut (fun save -> save >= 100))
+        |> Array.chunkBySize 128
+        |> Array.Parallel.sumBy (Array.sumBy (fun (t, pos) -> (pos, t) |> countShortcut (fun save -> save >= 100)))
         |> Answer.submit
