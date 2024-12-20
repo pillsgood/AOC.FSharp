@@ -28,14 +28,12 @@ module Day19 =
 
     [<Test>]
     let Part2 () =
-        let patterns = List.ofArray patterns
-
         let countAllCombinations =
             memoizeRec (fun f' (case: string) ->
                 patterns
-                |> List.indexed
-                |> List.filter (snd >> case.StartsWith)
-                |> List.sumBy (fun (_, p) ->
+                |> Seq.indexed
+                |> Seq.filter (snd >> case.StartsWith)
+                |> Seq.sumBy (fun (_, p) ->
                     let remaining = case[p.Length ..]
                     if remaining.Length = 0 then 1L else f' remaining))
 
