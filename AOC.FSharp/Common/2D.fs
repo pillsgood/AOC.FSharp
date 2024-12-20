@@ -27,3 +27,9 @@ module Array =
         array
         |> Array.mapi (fun j items -> items |> Seq.mapi (fun i -> f i j) |> Array.ofSeq)
         |> Array.concat
+
+    let inline choose2d<'a, 'b, 'c when 'b :> IEnumerable<'a>> (f: int -> int -> 'a -> 'c option) (array: 'b array) =
+        array
+        |> Array.mapi (fun j items -> items |> Seq.mapi (fun i -> f i j) |> Array.ofSeq)
+        |> Array.concat
+        |> Array.choose id
