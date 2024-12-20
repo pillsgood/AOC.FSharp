@@ -30,14 +30,14 @@ module Day20 =
 
         (Some start, adjacent start |> Seq.tryHead)
         |> Array.unfold (fun (current, next) ->
-            match current with
-            | None -> None
-            | Some current ->
+            current
+            |> Option.bind (fun current ->
                 match next with
                 | Some next ->
-                    let nextAdjacent = adjacent next |> Seq.filter (fun t -> not (t = current))
-                    Some(current, (Some next, nextAdjacent |> Seq.tryHead))
-                | None -> Some(current, (None, None)))
+                    let nextAdjacent = adjacent next |> Seq.filter (fun t -> not (t = current)) |> Seq.tryHead
+                    let state = (Some next, nextAdjacent)
+                    Some(current, state)
+                | None -> Some(current, (None, None))))
         |> Array.indexed
 
     let lookup = path |> Array.map (fun (i, v) -> v, i) |> Map.ofArray
