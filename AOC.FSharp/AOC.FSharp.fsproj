@@ -50,8 +50,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Pillsgood.AdventOfCode" Version="2.0.20"/>
-    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="2.0.20"/>
+    <PackageReference Include="Pillsgood.AdventOfCode" Version="2.0.22"/>
+    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="2.0.22"/>
     <PackageReference Update="FSharp.Core" Version="10.0.100"/>
   </ItemGroup>
 
