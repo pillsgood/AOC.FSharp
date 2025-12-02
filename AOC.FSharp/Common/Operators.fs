@@ -10,9 +10,3 @@ let inline tap ([<InlineIfLambda>] f) x =
 let flip f x y = f y x
 
 let inline konst x f = x
-
-let inline (!) f x = not (f x)
-let inline (!!) f x y = not (f x y)
-let inline (!!!) f x y z = not (f x y z)
-
-let (!=) = (<>)

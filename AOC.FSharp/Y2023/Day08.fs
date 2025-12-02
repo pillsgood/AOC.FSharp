@@ -3,7 +3,6 @@
 open System.Text.RegularExpressions
 open NUnit.Framework
 open Pillsgood.AdventOfCode
-open AOC.FSharp.Common
 
 [<AocFixture>]
 module Day08 =
@@ -51,7 +50,7 @@ module Day08 =
         |> Seq.length
 
     [<Test>]
-    let Part1 () = network["AAA"] |> traverse (fun n -> n.Id != "ZZZ") |> Answer.submit
+    let Part1 () = network["AAA"] |> traverse (fun n -> n.Id <> "ZZZ") |> Answer.submit
 
     [<Test>]
     let Part2 () =

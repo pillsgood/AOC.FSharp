@@ -24,7 +24,7 @@ module Day11 =
     let findExpansions (c: vector.Component) =
         let set =
             Seq.init dim[c] id
-            |> Seq.filter (fun i -> map |> Seq.forall (fun v -> v[c] != i))
+            |> Seq.filter (fun i -> map |> Seq.forall (fun v -> v[c] <> i))
             |> Seq.toList
 
         Seq.init dim[c] id
@@ -50,7 +50,6 @@ module Day11 =
         |> getPairs
         |> Seq.sumBy (fun (l, r) -> Vector.manhattan (l - r))
         |> Answer.submit
-
 
     [<Test>]
     let Part2 () =
