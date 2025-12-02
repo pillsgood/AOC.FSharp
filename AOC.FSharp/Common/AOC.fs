@@ -2,14 +2,13 @@
 
 open Pillsgood.AdventOfCode
 open Pillsgood.AdventOfCode.Common
-open Splat
 
 module Answer =
     let submit (answer: 'a) =
-        let svc = Locator.Current.GetRequiredService<IAnswerAssertion>()
+        let svc = Locator.GetRequiredService<IAnswerAssertion>()
         svc.Submit(string answer)
 
 module Input =
     let fetch<'T> =
-        let svc = Locator.Current.GetRequiredService<IPuzzleInputService>()
+        let svc = Locator.GetRequiredService<IPuzzleInputService>()
         svc.Get<'T>()

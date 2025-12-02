@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
-    <GenerateProgramFile>false</GenerateProgramFile>
+    <GenerateProgramFile>true</GenerateProgramFile>
     <IsTestProject>true</IsTestProject>
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
@@ -30,32 +29,30 @@
     <Compile Include="Common\2D.fs"/>
     <Compile Include="Common\Memoize.fs"/>
     <Compile Include="Common\Result.fs"/>
-    <Compile Include="Y2023\*.fs" />
-    <Compile Include="Y2024\*.fs" />
+    <!--    <Compile Include="Y2023\*.fs" />-->
+    <!--    <Compile Include="Y2024\*.fs" />-->
     <Compile Include="Y2025\*.fs"/>
-    <Compile Include="Program.fs" />
     <Content Include=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FSharp.Collections.ParallelSeq" Version="1.2.0" />
     <PackageReference Include="FSharp.Text.RegexProvider" Version="2.1.0" />
-    <PackageReference Include="FsUnit" Version="6.0.1" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="NUnit" Version="4.2.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
-    <PackageReference Include="NUnit.Analyzers" Version="4.4.0">
+    <PackageReference Include="FsUnit" Version="7.1.1"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+    <PackageReference Include="NUnit" Version="4.4.0"/>
+    <PackageReference Include="NUnit3TestAdapter" Version="5.2.0"/>
+    <PackageReference Include="NUnit.Analyzers" Version="4.11.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
+    <PackageReference Include="coverlet.collector" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Pillsgood.AdventOfCode" Version="1.1.2" />
-    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="1.1.2" />
-    <PackageReference Update="FSharp.Core" Version="9.0.100" />
-    <PackageReference Include="Splat" Version="15.2.22" />
+    <PackageReference Include="Pillsgood.AdventOfCode" Version="2.0.20"/>
+    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="2.0.20"/>
+    <PackageReference Update="FSharp.Core" Version="10.0.100"/>
   </ItemGroup>
 
 

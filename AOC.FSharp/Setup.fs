@@ -1,26 +1,29 @@
 namespace AOC.FSharp
 
 open System
+open System.IO
 open NUnit.Framework
 open Pillsgood.AdventOfCode
 open Pillsgood.AdventOfCode.Login
 
-[<SetUpFixture; Parallelizable>]
+[<SetUpFixture; Parallelizable(ParallelScope.Fixtures)>]
 type Setup() =
 
-    let mutable disposable: IAsyncDisposable option = None
+    let mutable disposable: IDisposable option = None
 
     [<OneTimeSetUp>]
     member _.Start() =
-        task {
-            let! startup = Registrations.StartAsync(fun cfg -> cfg.WithLogin() |> ignore)
-            disposable <- Some startup
-        }
+        let cache =
+            let dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AOC.FSharp")
+            Directory.CreateDirectory(dir) |> ignore
+            Path.Combine(dir, "store.db")
+
+        let startup = Aoc.Start(fun cfg -> cfg.WithLogin().WithCachePath(cache) |> ignore)
+
+        disposable <- Some(startup)
 
     [<OneTimeTearDown>]
     member _.Shutdown() =
-        task {
-            match disposable with
-            | Some d -> do! d.DisposeAsync()
-            | None -> ()
-        }
+        match disposable with
+        | Some d -> d.Dispose()
+        | None -> ()
