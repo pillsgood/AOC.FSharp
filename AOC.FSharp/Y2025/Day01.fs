@@ -10,7 +10,6 @@ module Day01 =
 
     let input =
         Input.fetch
-        |> String.splitLines
         |> Array.map (function
             | MatchValue (Regex "L(\d+)") [ value ] -> -(int value)
             | MatchValue (Regex "R(\d+)") [ value ] -> (int value)
