@@ -15,11 +15,8 @@ module Day04 =
         |> Set.ofArray
 
     let canRemove (state: int2 Set) position =
-        let countNeighbors (position: int2) =
-            Seq.append int2.cardinalDirections int2.ordinalDirections
-            |> Seq.map ((+) position)
-            |> Seq.count state.Contains
-
+        let offsets = Array.append int2.cardinalDirections int2.ordinalDirections
+        let countNeighbors (position: int2) = offsets |> Array.map ((+) position) |> Seq.count state.Contains
         countNeighbors position < 4
 
     [<Test>]
