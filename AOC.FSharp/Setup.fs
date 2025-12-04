@@ -14,7 +14,12 @@ type Setup() =
     [<OneTimeSetUp>]
     member _.Start() =
         let cache =
-            let dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AOC.FSharp")
+            let dir =
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "pillsgood.adventofcode"
+                )
+
             Directory.CreateDirectory(dir) |> ignore
             Path.Combine(dir, "store.db")
 

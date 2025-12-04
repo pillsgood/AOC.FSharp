@@ -29,8 +29,8 @@
     <Compile Include="Common\2D.fs"/>
     <Compile Include="Common\Memoize.fs"/>
     <Compile Include="Common\Result.fs"/>
-    <!--    <Compile Include="Y2023\*.fs" />-->
-    <!--    <Compile Include="Y2024\*.fs" />-->
+    <Compile Include="Y2023\*.fs"/>
+    <Compile Include="Y2024\*.fs"/>
     <Compile Include="Y2025\*.fs"/>
     <Content Include=".editorconfig" />
   </ItemGroup>
@@ -50,8 +50,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Pillsgood.AdventOfCode" Version="2.0.22"/>
-    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="2.0.22"/>
+    <PackageReference Include="Pillsgood.AdventOfCode" Version="2.1.13"/>
+    <PackageReference Include="Pillsgood.AdventOfCode.Login" Version="2.1.13"/>
     <PackageReference Update="FSharp.Core" Version="10.0.100"/>
   </ItemGroup>
 
