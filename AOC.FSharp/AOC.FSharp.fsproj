@@ -14,8 +14,9 @@
     <Compile Include="Common\AOC.fs" />
     <Compile Include="Common\Math.fs" />
     <Compile Include="Common\IVector.fs"/>
+    <Compile Include="Common\vector.fs" />
     <Compile Include="Common\vector2.fs"/>
-    <Compile Include="Common\vector.fs"/>
+    <Compile Include="Common\vector3.fs" />
     <Compile Include="Common\line.fs"/>
     <Compile Include="Common\Rect.fs"/>
     <Compile Include="Common\RectInt.fs"/>

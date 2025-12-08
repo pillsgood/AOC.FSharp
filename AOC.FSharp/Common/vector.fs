@@ -3,6 +3,11 @@
 open System.Numerics
 open AOC.FSharp.Common
 
+type Component =
+    | x = 0
+    | y = 1
+    | z = 2
+
 let inline components (vector: 'v & #IVector<_, 'u>) : ^u seq =
     seq {
         let size = 'v.size - 1
@@ -22,12 +27,14 @@ let inline map (f: ^u -> ^u) (vector: 'v & #IVector<'v, 'u>) : 'v & #IVector<'v,
 
 let inline sqrMagnitude (vector: ^v) : 'u = components vector |> Seq.map (fun x -> x * x) |> Seq.reduce (+)
 
-let inline magnitude (vector: 'v & #IVector<_, 'u>) : 'r & #IRootFunctions<'r> = vector |> sqrMagnitude |> 'r.CreateChecked |> 'r.Sqrt
+let inline magnitude (vector: 'v & #IVector<_, 'u>) : 'u & #IRootFunctions<'u> =
+    vector |> sqrMagnitude |> 'u.CreateChecked |> 'u.Sqrt
 
-let inline manhattan (vector: 'v & #IVector<_, 'u>) : 'u & #INumber<'u> = components vector |> Seq.map 'u.Abs |> Seq.reduce (+)
+let inline manhattan (vector: 'v & #IVector<_, 'u>) : 'u & #INumber<'u> =
+    components vector |> Seq.map 'u.Abs |> Seq.reduce (+)
 
 let inline sqrDistance (a: ^v) (b: ^v) : 'u = sqrMagnitude (a - b)
-
+let inline distance (a: ^v) (b: ^v) : 'u = magnitude (a - b)
 let inline normalize (vector: 'v & #IVector<_, 'u>) = vector |> map (fun u -> 'u.Clamp(u, -'u.One, 'u.One))
 
 let inline dot (left: ^v) (right: ^v) : 'u =

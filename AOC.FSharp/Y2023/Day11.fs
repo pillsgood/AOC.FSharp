@@ -21,7 +21,7 @@ module Day11 =
             | _ -> None)
         |> Seq.toList
 
-    let findExpansions (c: vector.Component) =
+    let findExpansions (c: Vector.Component) =
         let set =
             Seq.init dim[c] id
             |> Seq.filter (fun i -> map |> Seq.forall (fun v -> v[c] <> i))
@@ -31,7 +31,7 @@ module Day11 =
         |> Seq.map (fun i -> i, set |> Seq.filter (fun j -> j < i) |> Seq.length)
         |> Map
 
-    let expansion = {| x = findExpansions vector.Component.x; y = findExpansions vector.Component.y |}
+    let expansion = {| x = findExpansions Vector.Component.x; y = findExpansions Vector.Component.y |}
 
     let getPairs (map: 'a list) : ('a * 'a) seq =
         map

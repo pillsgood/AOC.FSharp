@@ -2,15 +2,7 @@
 
 open System.Numerics
 open Microsoft.FSharp.Core
-
-
-module vector =
-    type Component =
-        | x = 0
-        | y = 1
-        | z = 2
-
-open vector
+open Vector
 
 [<Struct>]
 type vector2<'u & #INumber<'u>> =
