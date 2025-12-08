@@ -29,6 +29,7 @@
     <Compile Include="Common\2D.fs"/>
     <Compile Include="Common\Memoize.fs"/>
     <Compile Include="Common\Result.fs"/>
+    <Compile Include="Common\ContainsPatterns.fs" />
     <Compile Include="Y2023\*.fs"/>
     <Compile Include="Y2024\*.fs"/>
     <Compile Include="Y2025\*.fs"/>

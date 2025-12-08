@@ -29,10 +29,9 @@ module Day07 =
                     acc
                     |> List.fold
                         (fun (next, counts) i ->
-                            if input.Splitters.Contains(int2 (i, j)) then
-                                (i - 1) :: (i + 1) :: next, counts + 1
-                            else
-                                i :: next, counts)
+                            match input.Splitters with
+                            | Contains(int2 (i, j)) -> (i - 1) :: (i + 1) :: next, counts + 1
+                            | _ -> i :: next, counts)
                         ([], 0)
 
                 scan (t + t') (List.distinct acc') (j + 2)
@@ -48,10 +47,9 @@ module Day07 =
                 let acc' =
                     acc
                     |> List.collect (fun (i, t) ->
-                        if input.Splitters.Contains(int2 (i, j)) then
-                            [ i - 1, t; i + 1, t ]
-                        else
-                            [ i, t ])
+                        match input.Splitters with
+                        | Contains(int2 (i, j)) -> [ i - 1, t; i + 1, t ]
+                        | _ -> [ i, t ])
                     |> List.groupBy fst
                     |> List.map (fun (i, t) -> i, t |> List.sumBy snd)
 
