@@ -91,6 +91,12 @@ let inline combinations n (source: 'a seq) =
     combine [] n (List.ofSeq source)
 
 let inline combinePairs (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1])
+let inline combine2 (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1])
+let inline combine3 (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1], l[2])
+let inline combine4 (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1], l[2], l[4])
+
+let inline findMin f source = source |> Seq.map f |> Seq.min
+let inline findMax f source = source |> Seq.map f |> Seq.max
 
 let inline tap f (source: 'a seq) =
     seq {

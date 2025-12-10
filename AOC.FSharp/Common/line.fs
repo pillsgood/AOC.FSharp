@@ -18,15 +18,14 @@ type line<'v, 'u when 'v :> IVector<'v, 'u> and 'u :> INumber<'u>> =
 
 type line2d<'u & #INumber<'u>> = line<vector2<'u>, 'u>
 
-[<AutoOpen>]
-module lineExt =
+module Line =
     let inline length (line: line<_, _>) = line.ab |> Vector.magnitude
 
     let inline sqrLength (line: line<_, 'u & #INumber<'u>>) = line.ab |> Vector.sqrMagnitude
 
     let inline manhattan (line: line<_, 'u & #INumber<'u>>) = line.ab |> Vector.manhattan
 
-    let contains (l: line<'v & #IVector<'v, 'u>, 'u & #INumber<'u>>) (point: 'v) =
+    let contains (point: 'v) (l: line<'v & #IVector<'v, 'u>, 'u & #INumber<'u>>) =
         let ap = line<'v, 'u> (l.a, point)
         let pb = line<'v, 'u> (point, l.b)
         let apL: float = length ap
