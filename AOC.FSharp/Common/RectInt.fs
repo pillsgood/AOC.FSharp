@@ -4,7 +4,7 @@ open System.Numerics
 open System.Runtime.CompilerServices
 
 [<Struct>]
-type RectInt<'u when 'u :> IBinaryInteger<'u>> =
+type RectInt<'u & #IBinaryInteger<'u>> =
     struct
         val mutable min: vector2<'u>
         val mutable max: vector2<'u>
