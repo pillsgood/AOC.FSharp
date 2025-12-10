@@ -59,16 +59,12 @@ module Day10 =
 
             dst
             |> Array.iteri (fun dstIdx targetValue ->
-                let sumTerms =
+                let sumExpr =
                     buttons
                     |> Array.indexed
                     |> Array.choose (fun (idx, button) ->
                         if button |> Array.contains dstIdx then Some vars[idx] else None)
-
-                let sumExpr =
-                    match sumTerms with
-                    | [||] -> ctx.MkInt(0) :> ArithExpr
-                    | terms -> ctx.MkAdd(terms)
+                    |> ctx.MkAdd
 
                 solver.Add(ctx.MkEq(sumExpr, ctx.MkInt(targetValue))))
 
