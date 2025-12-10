@@ -66,7 +66,7 @@ module Day10 =
                         if button |> Array.contains dstIdx then Some vars[idx] else None)
                     |> ctx.MkAdd
 
-                solver.Add(ctx.MkEq(sumExpr, ctx.MkInt(targetValue))))
+                ctx.MkEq(sumExpr, ctx.MkInt(targetValue)) |> solver.Add)
 
             let objective = ctx.MkAdd(vars) |> solver.MkMinimize
 
