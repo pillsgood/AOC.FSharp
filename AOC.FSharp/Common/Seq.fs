@@ -83,12 +83,21 @@ let inline reducei ([<InlineIfLambda>] f) (source: 'a seq) =
 
 let inline combinations n (source: 'a seq) =
     let rec combine acc n l =
-        match n, l with
-        | 0, _ -> [ List.rev acc ]
-        | _, [] -> []
-        | k, x :: xs -> combine (x :: acc) (k - 1) xs @ combine acc k xs
+        seq {
+            match n, l with
+            | 0, _ -> yield List.rev acc
+            | _, [] -> ()
+            | k, x :: xs ->
+                yield! combine (x :: acc) (k - 1) xs
+                yield! combine acc k xs
+        }
 
-    combine [] n (List.ofSeq source)
+    let sourceList =
+        match source with
+        | :? ('a list) as lst -> lst
+        | _ -> List.ofSeq source
+
+    combine [] n sourceList
 
 let inline combinePairs (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1])
 let inline combine2 (source: 'a seq) = source |> combinations 2 |> Seq.map (fun l -> l[0], l[1])

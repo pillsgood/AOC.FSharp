@@ -23,3 +23,5 @@ let inline chunkBySize (count: int) (str: string) : string array =
     str |> Seq.chunkBySize count |> Seq.map String |> Seq.toArray
 
 let inline join (separator: string) (str: string seq) = String.Join(separator, str)
+
+let inline rev (str: string) = String(str.ToCharArray() |> Array.rev)

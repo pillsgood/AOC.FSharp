@@ -42,6 +42,7 @@
     <PackageReference Include="FSharp.Text.RegexProvider" Version="2.1.0" />
     <PackageReference Include="FsUnit" Version="7.1.1"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1"/>
+    <PackageReference Include="Microsoft.Z3" Version="4.12.2"/>
     <PackageReference Include="NUnit" Version="4.4.0"/>
     <PackageReference Include="NUnit3TestAdapter" Version="5.2.0"/>
     <PackageReference Include="NUnit.Analyzers" Version="4.11.2">
