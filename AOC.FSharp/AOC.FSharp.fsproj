@@ -11,6 +11,8 @@
   <ItemGroup>
     <Compile Include="Setup.fs" />
     <Compile Include="Common\Operators.fs"/>
+    <Compile Include="Common\Seq.fs"/>
+    <Compile Include="Common\Map.fs"/>
     <Compile Include="Common\AOC.fs" />
     <Compile Include="Common\Math.fs" />
     <Compile Include="Common\IVector.fs"/>
@@ -22,11 +24,9 @@
     <Compile Include="Common\RectInt.fs"/>
     <Compile Include="Common\Regex.fs"/>
     <Compile Include="Common\String.fs"/>
-    <Compile Include="Common\Seq.fs" />
     <Compile Include="Common\PSeq.fs" />
     <Compile Include="Common\Option.fs" />
     <Compile Include="Common\Math64.fs" />
-    <Compile Include="Common\Map.fs" />
     <Compile Include="Common\2D.fs"/>
     <Compile Include="Common\Memoize.fs"/>
     <Compile Include="Common\Result.fs"/>

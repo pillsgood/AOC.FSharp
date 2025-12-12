@@ -4,7 +4,7 @@ open System.Numerics
 open System.Runtime.CompilerServices
 
 [<Struct>]
-type RectInt<'u & #IBinaryInteger<'u>> =
+type RectInt<'u & #IBinaryInteger<'u> when 'u: comparison> =
     struct
         val mutable min: vector2<'u>
         val mutable max: vector2<'u>
@@ -22,17 +22,23 @@ type RectInt<'u & #IBinaryInteger<'u>> =
 
     static member minMax min max = RectInt(min, max - min)
 
+    static member getBounds(points: #seq<vector2<'u>>) =
+        let min = vector2<'u> (points |> Seq.findMin _.x, points |> Seq.findMin _.y)
+        let max = vector2<'u> (points |> Seq.findMax _.x, points |> Seq.findMax _.y)
+        RectInt<'u>.minMax min (max + vector2<'u>.one)
+
     member this.xMin = this.min.x
     member this.yMin = this.min.y
     member this.xMax = this.max.x
     member this.yMax = this.max.y
 
-    member this.width = 'u.Abs(this.xMax - this.xMin) + 'u.One
-    member this.height = 'u.Abs(this.yMax - this.yMin) + 'u.One
+    member inline this.width = 'u.Abs(this.xMax - this.xMin) + 'u.One
+    member inline this.height = 'u.Abs(this.yMax - this.yMin) + 'u.One
 
-    member this.perimeter = 'u.CreateChecked(2) * (this.width + this.height)
+    member inline this.perimeter = 'u.CreateChecked(2) * (this.width + this.height)
 
-    member this.size = vector2<'u> (this.width, this.height)
+    member inline this.size = vector2<'u> (this.width, this.height)
+    member inline this.area = (this.width * this.height)
 
     override this.ToString() = $"rectInt {{ min: {this.min}, max: {this.max} }}"
 
@@ -64,7 +70,6 @@ module RectInt =
         || (y && (point.x = rect.xMin || point.x = rect.xMax))
 
     let inline move (v: vector2<'u>) (rect: RectInt<'u>) = RectInt<'u>(rect.min + v, rect.size)
-    let inline area (rect: RectInt<'u>) = (rect.width * rect.height)
 
 [<AutoOpen>]
 type RectIntExtensions =

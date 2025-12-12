@@ -26,7 +26,7 @@ module Day09 =
         input
         |> Seq.combine2
         |> Seq.map createRect
-        |> Seq.findMax RectInt.area
+        |> Seq.findMax _.area
         |> Answer.submit
 
     [<Test>]
@@ -45,5 +45,5 @@ module Day09 =
         |> Seq.filter (fun rect ->
             lines
             |> List.forall (not << (RectInt.intersects (rect |> RectInt.shrink int2.one))))
-        |> Seq.findMax RectInt.area
+        |> Seq.findMax _.area
         |> Answer.submit
